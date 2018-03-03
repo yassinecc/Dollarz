@@ -7,6 +7,7 @@
 import React, { Component } from 'react';
 import { Platform, StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
 import stripe from 'tipsi-stripe';
+import { doPayment } from 'DollarzApp/src/services/api';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -32,9 +33,14 @@ export default class App extends Component<Props, State> {
   }
 
   requestPayment = () => {
-    stripe.paymentRequestWithCardForm().then(stripeTokenInfo => {
-      this.setState({ token: stripeTokenInfo });
-    });
+    stripe
+      .paymentRequestWithCardForm()
+      .then(stripeResponse => {
+        this.setState({ token: stripeResponse });
+        return doPayment(stripeResponse.tokenId);
+      })
+      .then(console.log)
+      .catch(console.log);
   };
 
   render() {
