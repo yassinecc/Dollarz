@@ -20,6 +20,22 @@ const settings = {
   format: 'html',
 };
 
+app.post('/api/doPayment/', function(req, res) {
+  stripe.charges
+    .create({
+      amount: 900,
+      currency: 'eur',
+      source: req.body.first,
+      description: 'Test payment from app',
+    })
+    .then(stripeResponse => {
+      res.json(stripeResponse);
+    })
+    .catch(error => {
+      res.status(403).send('Error occured', { error });
+    });
+});
+
 app.use('/explorer', explorer(settings));
 
 app.listen(5000, function() {

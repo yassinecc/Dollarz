@@ -1,5 +1,5 @@
 export const doPayment = stripeTokenId => {
-  return fetch('http://localhost:5000/api/test', {
+  return fetch('http://localhost:5000/api/doPayment', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -10,11 +10,9 @@ export const doPayment = stripeTokenId => {
     }),
   }).then(res => {
     if (res.status === 200) {
-      console.log('coucou', res);
-      return 'ok';
+      return res;
     } else {
-      console.log('error');
-      return Promise.reject(Error('error'));
+      return Promise.reject(Error('error', { res }));
     }
   });
 };
