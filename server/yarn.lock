@@ -74,6 +74,10 @@ ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
 
+ejs@^2.5.6:
+  version "2.5.7"
+  resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.5.7.tgz#cc872c168880ae3c7189762fd5ffc00896c9518a"
+
 encodeurl@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/encodeurl/-/encodeurl-1.0.2.tgz#ad3ff4c86ec2d029322f5a02c3a9a606c95b3f59"
@@ -85,6 +89,14 @@ escape-html@~1.0.3:
 etag@~1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
+
+express-explorer@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/express-explorer/-/express-explorer-0.4.1.tgz#f4f2b8678f642d554c0efe71bdbd01c87049221e"
+  dependencies:
+    ejs "^2.5.6"
+    json-formatter-js "^2.2.0"
+    whatwg-fetch "^2.0.3"
 
 express@^4.16.2:
   version "4.16.2"
@@ -161,6 +173,10 @@ inherits@2.0.3:
 ipaddr.js@1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.6.0.tgz#e3fa357b773da619f26e95f049d055c72796f86b"
+
+json-formatter-js@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/json-formatter-js/-/json-formatter-js-2.2.0.tgz#1ed987223ef2f1d945304597faae78b580a8212b"
 
 lodash.isplainobject@^4.0.6:
   version "4.0.6"
@@ -312,3 +328,7 @@ utils-merge@1.0.1:
 vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
+
+whatwg-fetch@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-2.0.3.tgz#9c84ec2dcf68187ff00bc64e1274b442176e1c84"
