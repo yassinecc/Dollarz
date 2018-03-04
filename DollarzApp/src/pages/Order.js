@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import { StyleSheet, View, Button, Text } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import stripe from 'tipsi-stripe';
 import { doPayment } from 'DollarzApp/src/services/api';
 
@@ -36,7 +37,12 @@ export default class Order extends Component {
     return (
       <View style={styles.container}>
         <Button title={'Entrer carte'} style={styles.payment} onPress={this.requestPayment} />
-        {this.state.paymentSucceeded && <Text>Payment succeded! {this.state.token.tokenId}</Text>}
+        {this.state.paymentSucceeded && (
+          <View>
+            <Icon name="check-circle" size={30} color={'rgb(130,219,9)'} />
+            <Text>Payment succeded! {this.state.token.tokenId}</Text>
+          </View>
+        )}
       </View>
     );
   }
