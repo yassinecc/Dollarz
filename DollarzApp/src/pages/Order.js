@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
-import { StyleSheet, View, Button, Text, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Button, Text, ActivityIndicator, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import stripe from 'tipsi-stripe';
 import { doPayment } from 'DollarzApp/src/services/api';
@@ -16,6 +16,7 @@ export default class Order extends Component {
     this.state = {
       paymentPending: false,
       paymentSucceeded: false,
+      text: '',
     };
   }
 
@@ -36,6 +37,12 @@ export default class Order extends Component {
     console.log(this.state.token);
     return (
       <View style={styles.container}>
+        <TextInput
+          keyBoardType={'numeric'}
+          style={styles.textInput}
+          onChangeText={text => this.setState({ text })}
+          value={this.state.text}
+        />
         <Button title={'Entrer carte'} style={styles.payment} onPress={this.requestPayment} />
         {this.state.paymentPending && (
           <View>
@@ -60,5 +67,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+  },
+  textInput: {
+    height: 40,
+    width: 150,
+    padding: 2,
+    borderColor: 'rgb(100, 100, 100)',
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: 'white',
+    textAlign: 'center',
   },
 });
