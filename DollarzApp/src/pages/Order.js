@@ -14,6 +14,7 @@ export default class Order extends Component {
     super();
     this.state = {
       token: { tokenId: '' },
+      paymentSucceeded: false,
     };
   }
 
@@ -24,7 +25,9 @@ export default class Order extends Component {
         this.setState({ token: stripeResponse });
         return doPayment(stripeResponse.tokenId);
       })
-      .then(console.log)
+      .then(response => {
+        this.setState({ paymentSucceeded: true });
+      })
       .catch(console.log);
   };
 
@@ -33,7 +36,7 @@ export default class Order extends Component {
     return (
       <View style={styles.container}>
         <Button title={'Entrer carte'} style={styles.payment} onPress={this.requestPayment} />
-        <Text>{this.state.token.tokenId}</Text>
+        {this.state.paymentSucceeded && <Text>Payment succeded! {this.state.token.tokenId}</Text>}
       </View>
     );
   }

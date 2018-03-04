@@ -13,7 +13,7 @@ app.get('/', function(req, res) {
 });
 
 app.post('/api/test/', function(req, res) {
-  res.json({ hey: req.body.first, yo: req.body.second, vam: secret.test });
+  res.json({ hey: req.body.first, yo: req.body.second });
 });
 
 const settings = {
@@ -23,7 +23,7 @@ const settings = {
 app.post('/api/doPayment/', function(req, res) {
   stripe.charges
     .create({
-      amount: 900,
+      amount: 1000,
       currency: 'eur',
       source: req.body.first,
       description: 'Test payment from app',
