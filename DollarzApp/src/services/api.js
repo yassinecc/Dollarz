@@ -1,12 +1,12 @@
-export const doPayment = stripeTokenId => {
+export const doPayment = (stripeTokenId, amount) => {
   return fetch('http://localhost:5000/api/doPayment', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      first: stripeTokenId,
-      second: 'coucou',
+      tokenId: stripeTokenId,
+      amount: amount,
     }),
   }).then(res => {
     if (res.status === 200) {

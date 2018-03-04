@@ -1,7 +1,15 @@
 // @flow
 
 import React, { Component } from 'react';
-import { StyleSheet, View, Button, Text, ActivityIndicator, TextInput } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Button,
+  Text,
+  ActivityIndicator,
+  TextInput,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import stripe from 'tipsi-stripe';
 import { doPayment } from 'DollarzApp/src/services/api';
@@ -16,7 +24,7 @@ export default class Order extends Component {
     this.state = {
       paymentPending: false,
       paymentSucceeded: false,
-      text: '',
+      amountText: '',
     };
   }
 
@@ -24,8 +32,8 @@ export default class Order extends Component {
     stripe
       .paymentRequestWithCardForm()
       .then(stripeResponse => {
-        this.setState({ paymentPending: true });
-        return doPayment(stripeResponse.tokenId);
+        this.setState({ paymentPending: true, paymentSucceeded: false });
+        return doPayment(stripeResponse.tokenId, Number(this.state.amountText));
       })
       .then(response => {
         this.setState({ paymentPending: false, paymentSucceeded: true });
@@ -34,14 +42,13 @@ export default class Order extends Component {
   };
 
   render() {
-    console.log(this.state.token);
     return (
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <TextInput
-          keyBoardType={'numeric'}
+          keyboardType={'numeric'}
           style={styles.textInput}
           onChangeText={text => this.setState({ text })}
-          value={this.state.text}
+          value={this.state.amountText}
         />
         <Button title={'Entrer carte'} style={styles.payment} onPress={this.requestPayment} />
         {this.state.paymentPending && (
@@ -56,7 +63,7 @@ export default class Order extends Component {
             <Icon name="ios-checkmark-circle" size={30} color={'rgb(130,219,9)'} />
           </View>
         )}
-      </View>
+      </ScrollView>
     );
   }
 }

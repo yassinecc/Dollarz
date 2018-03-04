@@ -23,9 +23,9 @@ const settings = {
 app.post('/api/doPayment/', function(req, res) {
   stripe.charges
     .create({
-      amount: 1000,
+      amount: 100 * req.body.amount,
       currency: 'eur',
-      source: req.body.first,
+      source: req.body.tokenId,
       description: 'Test payment from app',
     })
     .then(stripeResponse => {
@@ -39,5 +39,5 @@ app.post('/api/doPayment/', function(req, res) {
 app.use('/explorer', explorer(settings));
 
 app.listen(5000, function() {
-  console.log('Dev app listening on port 5000!');
+  console.log('Dev app listening on port 5000');
 });
