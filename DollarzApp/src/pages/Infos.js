@@ -7,7 +7,7 @@ export default class Infos extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>This is the infos page</Text>
+        <Text>Ceci est la page d'accueil</Text>
       </View>
     );
   }
