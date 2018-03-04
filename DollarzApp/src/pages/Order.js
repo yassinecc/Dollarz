@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
-import { StyleSheet, View, Button, Text } from 'react-native';
+import { StyleSheet, View, Button, Text, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import stripe from 'tipsi-stripe';
 import { doPayment } from 'DollarzApp/src/services/api';
@@ -14,7 +14,7 @@ export default class Order extends Component {
   constructor() {
     super();
     this.state = {
-      token: { tokenId: '' },
+      paymentPending: false,
       paymentSucceeded: false,
     };
   }
@@ -23,11 +23,11 @@ export default class Order extends Component {
     stripe
       .paymentRequestWithCardForm()
       .then(stripeResponse => {
-        this.setState({ token: stripeResponse });
+        this.setState({ paymentPending: true });
         return doPayment(stripeResponse.tokenId);
       })
       .then(response => {
-        this.setState({ paymentSucceeded: true });
+        this.setState({ paymentPending: false, paymentSucceeded: true });
       })
       .catch(console.log);
   };
@@ -37,10 +37,16 @@ export default class Order extends Component {
     return (
       <View style={styles.container}>
         <Button title={'Entrer carte'} style={styles.payment} onPress={this.requestPayment} />
+        {this.state.paymentPending && (
+          <View>
+            <Text>Paiement en cours</Text>
+            <ActivityIndicator />
+          </View>
+        )}
         {this.state.paymentSucceeded && (
           <View>
+            <Text>Paiement réussi!</Text>
             <Icon name="ios-checkmark-circle" size={30} color={'rgb(130,219,9)'} />
-            <Text>Payment succeded! {this.state.token.tokenId}</Text>
           </View>
         )}
       </View>
