@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
+import { observer, inject } from 'mobx-react/native'
 import {
   StyleSheet,
   View,
@@ -18,7 +19,13 @@ stripe.init({
   publishableKey: 'pk_test_NXzesZUopyI0RM7xO4HoIEg3',
 });
 
-export default class Order extends Component {
+
+@inject(({ userStore }) => ({
+  user: userStore.user,
+  accessToken: userStore.accessToken,
+}))
+@observer
+class Order extends Component {
   constructor() {
     super();
     this.state = {
@@ -44,25 +51,33 @@ export default class Order extends Component {
   render() {
     return (
       <ScrollView contentContainerStyle={styles.container}>
-        <TextInput
-          keyboardType={'numeric'}
-          style={styles.textInput}
-          onChangeText={text => this.setState({ amountText: text })}
-          value={this.state.amountText}
-        />
-        <Button title={'Entrer carte'} style={styles.payment} onPress={this.requestPayment} />
-        {this.state.paymentPending && (
-          <View>
-            <Text>Paiement en cours</Text>
-            <ActivityIndicator />
+      {!this.props.accessToken && 
+        <Text>Vous devez être connecté pour voir cette page</Text>
+      }
+      {this.props.accessToken && 
+        <View>
+          <TextInput
+            keyboardType={'numeric'}
+            style={styles.textInput}
+            onChangeText={text => this.setState({ amountText: text })}
+            value={this.state.amountText}
+          />
+          <Button title={'Entrer carte'} style={styles.payment} onPress={this.requestPayment} />
+        
+          {this.state.paymentPending && (
+            <View>
+              <Text>Paiement en cours</Text>
+              <ActivityIndicator />
+            </View>
+          )}
+          {this.state.paymentSucceeded && (
+            <View>
+              <Text>Paiement réussi!</Text>
+              <Icon name="ios-checkmark-circle" size={30} color={'rgb(130,219,9)'} />
+            </View>
+          )}
           </View>
-        )}
-        {this.state.paymentSucceeded && (
-          <View>
-            <Text>Paiement réussi!</Text>
-            <Icon name="ios-checkmark-circle" size={30} color={'rgb(130,219,9)'} />
-          </View>
-        )}
+        }
       </ScrollView>
     );
   }
@@ -86,3 +101,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+export default Order

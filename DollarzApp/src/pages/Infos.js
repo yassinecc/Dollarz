@@ -30,23 +30,34 @@ class Infos extends Component<StateType> {
   }
 
   render() {
-    console.log(this.props.accessToken)
     return (
       <View style={styles.container}>
         <Text>Ceci est la page d'accueil</Text>
-        <TextInput
-          style={styles.textInput}
-          value={this.state.firstName}
-          onChangeText={text=>this.setState({username: text})
-        }/>
-        <TextInput
-          secureTextEntry
-          style={styles.textInput}
-          value={this.state.lastName}
-          onChangeText={text=>this.setState({password: text})
-        }/>
-        <Button title={"Nouvel utilisateur"} onPress={this.signup} />
-        <Button title={"Login"} onPress={this.login} />
+        {this.props.accessToken &&
+          <View>
+            <Text>Bienvenue {this.props.user} !</Text>
+            <Button title='Déconnexion' onPress={this.props.logout} />
+          </View>
+        }
+        {!this.props.accessToken && (
+          <View style={styles.secondaryContainer}>
+            <Text>Veuillez vous connecter ou vous inscrire</Text>
+            <TextInput
+              style={styles.textInput}
+              value={this.state.username}
+              onChangeText={text=>this.setState({username: text})
+            }/>
+            <TextInput
+              secureTextEntry
+              style={styles.textInput}
+              value={this.state.password}
+              onChangeText={text=>this.setState({password: text})
+            }/>
+            <Button title={"Nouvel utilisateur"} onPress={this.signup} />
+            <Button title={"Connexion"} onPress={this.login} />
+          </View>
+          )
+        }
       </View>
     );
   }
@@ -58,6 +69,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+  },
+  secondaryContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   textInput: {
     height: 40,
