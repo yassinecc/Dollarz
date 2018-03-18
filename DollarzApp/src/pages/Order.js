@@ -62,7 +62,7 @@ class Order extends Component {
             onChangeText={text => this.setState({ amountText: text })}
             value={this.state.amountText}
           />
-          <Button title={'Entrer carte'} style={styles.payment} onPress={this.requestPayment} />
+          <Button title={'Nouvelle carte'} style={styles.payment} onPress={this.requestPayment} />
         
           {this.state.paymentPending && (
             <View>
