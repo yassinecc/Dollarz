@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
-import { createUser } from 'DollarzApp/src/services/api';
+import { createUser, login } from 'DollarzApp/src/services/api';
 
 export default class Infos extends Component<StateType> {
   constructor() {
@@ -15,6 +15,10 @@ export default class Infos extends Component<StateType> {
 
   createUser = () => {
     return createUser(this.state.firstName, this.state.lastName)
+  }
+  
+  login = () => {
+    return login(this.state.firstName, this.state.lastName)
   }
 
   render() {
@@ -33,6 +37,7 @@ export default class Infos extends Component<StateType> {
           onChangeText={text=>this.setState({lastName: text})
         }/>
         <Button title={"Nouvel utilisateur"} onPress={this.createUser} />
+        <Button title={"Login"} onPress={this.login} />
       </View>
     );
   }

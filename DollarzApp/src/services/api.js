@@ -19,7 +19,6 @@ export const doPayment = (stripeTokenId, amount) => {
 };
 
 export const createUser = (username, password) => {
-  console.log(username, password)
   return fetch('http://localhost:5000/api/createCustomer', {
     method: 'POST',
     headers: {
@@ -32,6 +31,27 @@ export const createUser = (username, password) => {
   })
   .then(res => {
     if (res.status === 200) {
+      return res;
+    } else {
+      return Promise.reject(Error('error', { res }));
+    }
+  });
+}
+
+export const login = (username, password) => {
+  return fetch('http://localhost:5000/api/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',      
+    },
+    body: JSON.stringify({
+      username: username,
+      password: password,
+    })
+  })
+  .then(res => {
+    if (res.status === 200) {
+      console.log('login ok')
       return res;
     } else {
       return Promise.reject(Error('error', { res }));
