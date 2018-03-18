@@ -8,6 +8,7 @@
     "postinstall": "rm ./node_modules/react-native/local-cli/core/__fixtures__/files/package.json"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "babel-preset-mobx": "^1.0.2",
     "babel-preset-react-native-stage-0": "^1.0.1",
     "mobx": "^4.1.0",

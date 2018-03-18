@@ -3,12 +3,12 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react/native'
 import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
-import { createUser, login } from 'DollarzApp/src/services/api';
 
 @inject(({ userStore }) => ({
   user: userStore.user,
   accessToken: userStore.accessToken,
   login: userStore.login,
+  signup: userStore.signup,
   logout: userStore.logout
 }))
 
@@ -17,35 +17,35 @@ class Infos extends Component<StateType> {
   constructor() {
     super()
     this.state = {
-      firstName: '',
-      lastName: ''
+      username: '',
+      password: ''
     }
   }
 
-  createUser = () => {
-    return createUser(this.state.firstName, this.state.lastName)
-  }
-
   login = () => {
-    return login(this.state.firstName, this.state.lastName)
+    return this.props.login(this.state.username, this.state.password)
+  }
+  signup = () => {
+    return this.props.signup(this.state.username, this.state.password)
   }
 
   render() {
+    console.log(this.props.accessToken)
     return (
       <View style={styles.container}>
         <Text>Ceci est la page d'accueil</Text>
         <TextInput
           style={styles.textInput}
           value={this.state.firstName}
-          onChangeText={text=>this.setState({firstName: text})
+          onChangeText={text=>this.setState({username: text})
         }/>
         <TextInput
           secureTextEntry
           style={styles.textInput}
           value={this.state.lastName}
-          onChangeText={text=>this.setState({lastName: text})
+          onChangeText={text=>this.setState({password: text})
         }/>
-        <Button title={"Nouvel utilisateur"} onPress={this.createUser} />
+        <Button title={"Nouvel utilisateur"} onPress={this.signup} />
         <Button title={"Login"} onPress={this.login} />
       </View>
     );
