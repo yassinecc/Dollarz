@@ -8,7 +8,7 @@ const stripe = require('stripe')(secret.stripeSecretKey);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-require('./routes/user')(app);
+require('./routes/customer')(app);
 
 app.get('/', (req, res) => {
   res.send('Hello Dev!');

@@ -7,7 +7,7 @@ module.exports = app => {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
       })
-      .then(user => res.status(201).send(user))
+      .then(user => res.status(200).send(user))
       .catch(error => res.status(400).send(error));
   })
 };

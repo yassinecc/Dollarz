@@ -8,7 +8,8 @@ export const doPayment = (stripeTokenId, amount) => {
       tokenId: stripeTokenId,
       amount: amount,
     }),
-  }).then(res => {
+  })
+  .then(res => {
     if (res.status === 200) {
       return res;
     } else {
@@ -19,5 +20,21 @@ export const doPayment = (stripeTokenId, amount) => {
 
 export const createUser = (firstName, lastName) => {
   console.log(firstName, lastName)
-  return true
+  return fetch('http://localhost:5000/api/createCustomer', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      firstName: firstName,
+      lastName: lastName,
+    })
+  })
+  .then(res => {
+    if (res.status === 200) {
+      return res;
+    } else {
+      return Promise.reject(Error('error', { res }));
+    }
+  });
 }
