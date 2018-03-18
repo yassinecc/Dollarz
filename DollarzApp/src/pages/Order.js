@@ -47,7 +47,7 @@ export default class Order extends Component {
         <TextInput
           keyboardType={'numeric'}
           style={styles.textInput}
-          onChangeText={text => this.setState({ text })}
+          onChangeText={text => this.setState({ amountText: text })}
           value={this.state.amountText}
         />
         <Button title={'Entrer carte'} style={styles.payment} onPress={this.requestPayment} />
