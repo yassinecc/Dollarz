@@ -8,11 +8,13 @@ const stripe = require('stripe')(secret.stripeSecretKey);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get('/', function(req, res) {
+require('./routes/user')(app);
+
+app.get('/', (req, res) => {
   res.send('Hello Dev!');
 });
 
-app.post('/api/test/', function(req, res) {
+app.post('/api/test/', (req, res) => {
   res.json({ hey: req.body.first, yo: req.body.second });
 });
 
@@ -20,7 +22,7 @@ const settings = {
   format: 'html',
 };
 
-app.post('/api/doPayment/', function(req, res) {
+app.post('/api/doPayment/', (req, res) => {
   stripe.charges
     .create({
       amount: 100 * req.body.amount,
