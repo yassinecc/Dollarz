@@ -8,6 +8,10 @@
     "postinstall": "rm ./node_modules/react-native/local-cli/core/__fixtures__/files/package.json"
   },
   "dependencies": {
+    "babel-preset-mobx": "^1.0.2",
+    "babel-preset-react-native-stage-0": "^1.0.1",
+    "mobx": "^4.1.0",
+    "mobx-react": "^5.0.0",
     "react": "16.2.0",
     "react-native": "0.53.3",
     "react-native-vector-icons": "^4.5.0",

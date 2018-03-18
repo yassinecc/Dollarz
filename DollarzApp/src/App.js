@@ -1,6 +1,8 @@
 // @flow
 
 import React, { Component } from 'react';
+import { Provider } from 'mobx-react/native'
+import { userStore } from 'DollarzApp/src/stores'
 import TabScreen from './pages/TabScreen';
 
 type Props = {};
@@ -11,6 +13,10 @@ type State = {
 
 export default class App extends Component<Props, State> {
   render() {
-    return <TabScreen />;
+    return (
+      <Provider userStore={userStore}>
+        <TabScreen />
+      </Provider>
+    );
   }
 }

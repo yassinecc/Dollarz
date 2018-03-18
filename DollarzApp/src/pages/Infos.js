@@ -1,10 +1,19 @@
 // @flow
 
 import React, { Component } from 'react';
+import { observer, inject } from 'mobx-react/native'
 import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
 import { createUser, login } from 'DollarzApp/src/services/api';
 
-export default class Infos extends Component<StateType> {
+@inject(({ userStore }) => ({
+  user: userStore.user,
+  accessToken: userStore.accessToken,
+  login: userStore.login,
+  logout: userStore.logout
+}))
+
+@observer
+class Infos extends Component<StateType> {
   constructor() {
     super()
     this.state = {
@@ -16,7 +25,7 @@ export default class Infos extends Component<StateType> {
   createUser = () => {
     return createUser(this.state.firstName, this.state.lastName)
   }
-  
+
   login = () => {
     return login(this.state.firstName, this.state.lastName)
   }
@@ -61,3 +70,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   }
 });
+
+export default Infos;
