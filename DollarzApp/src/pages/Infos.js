@@ -27,6 +27,7 @@ export default class Infos extends Component<StateType> {
           onChangeText={text=>this.setState({firstName: text})
         }/>
         <TextInput
+          secureTextEntry
           style={styles.textInput}
           value={this.state.lastName}
           onChangeText={text=>this.setState({lastName: text})

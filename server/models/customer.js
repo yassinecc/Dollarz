@@ -1,8 +1,9 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   var Customer = sequelize.define('Customer', {
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
+    username: DataTypes.STRING,
+    password: DataTypes.STRING,
+    salt: DataTypes.STRING,
     stripeCustomerId: DataTypes.STRING,
     defaultSourceId: DataTypes.STRING
   }, {});

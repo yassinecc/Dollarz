@@ -8,10 +8,16 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      firstName: {
+      username: {
+        allowNull: false,
         type: Sequelize.STRING
       },
-      lastName: {
+      password: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      salt: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       stripeCustomerId: {

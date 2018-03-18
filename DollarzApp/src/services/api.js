@@ -18,16 +18,16 @@ export const doPayment = (stripeTokenId, amount) => {
   });
 };
 
-export const createUser = (firstName, lastName) => {
-  console.log(firstName, lastName)
+export const createUser = (username, password) => {
+  console.log(username, password)
   return fetch('http://localhost:5000/api/createCustomer', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      firstName: firstName,
-      lastName: lastName,
+      username: username,
+      password: password,
     })
   })
   .then(res => {
