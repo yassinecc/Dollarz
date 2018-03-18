@@ -16,3 +16,8 @@ export const doPayment = (stripeTokenId, amount) => {
     }
   });
 };
+
+export const createUser = (firstName, lastName) => {
+  console.log(firstName, lastName)
+  return true
+}
