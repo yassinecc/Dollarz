@@ -1,0 +1,17 @@
+{
+  "development": {
+    "username": "admin",
+    "password": null,
+    "database": "dollarz-dev",
+    "host": "127.0.0.1",
+    "port": 5432,
+    "dialect": "postgresql"
+  },
+  "test": {
+    "username": "admin",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "postgresql"
+  }
+}
