@@ -9,31 +9,26 @@ class UserStore {
   @action
   login(username, password) {
     return login(username, password)
-    .then(res => {
-      console.log(res)
-      if (res.status === 200) {
-        res.json()
-      }
+    .then(data => {
+      this.accessToken = data.accessToken
+      this.user = username
     })
-    .then(console.log)
     .catch(console.log)
   }
 
   @action signup(username, password) {
     return createUser(username, password)
-    .then(res => {
-      if (res.status === 200) {
-        this.user = username
-        this.accessToken = res.accessToken
-      }
+    .then(() => {
+        return Promise.resolve('Authentication suceeded')
     })
     .catch(console.log)
   }
 
   @action
-  resetIdentity() {
+  logout() {
     this.accessToken = null
     this.user = null
+    return Promise.resolve()
   }
 
 }

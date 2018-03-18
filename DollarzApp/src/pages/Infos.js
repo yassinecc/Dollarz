@@ -7,9 +7,9 @@ import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
 @inject(({ userStore }) => ({
   user: userStore.user,
   accessToken: userStore.accessToken,
-  login: userStore.login,
-  signup: userStore.signup,
-  logout: userStore.logout
+  login: (username, password) => userStore.login(username, password),
+  signup: (username, password) => userStore.signup(username, password),
+  logout: () => userStore.logout()
 }))
 
 @observer
