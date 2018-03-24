@@ -1,23 +1,24 @@
 import axios from 'axios'
 
-export const doPayment = (stripeTokenId, amount) => {
-  return fetch('http://localhost:5000/api/doPayment', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      tokenId: stripeTokenId,
-      amount: amount,
-    }),
+export const doPayment = (stripeTokenId, amount, accessToken) => {
+  const body = {
+    tokenId: stripeTokenId,
+    amount: amount,
+    cardId: '',
+  }
+  const headers = {
+    'Content-Type': 'application/json',
+    'x-access-token' : accessToken,
+  }
+  return axios.post('http://localhost:5000/api/doPayment', body, { headers })
+  .then(({ data }) => {
+    console.log(data)
+    return data; 
   })
-  .then(res => {
-    if (res.status === 200) {
-      return res;
-    } else {
-      return Promise.reject(Error('error', { res }));
-    }
-  });
+  .catch(error => {
+    console.log(error)
+    return Promise.reject(Error(error))
+  })
 };
 
 export const createUser = (username, password) => {
@@ -30,12 +31,13 @@ export const createUser = (username, password) => {
     'Content-Type': 'application/json',      
   }
 
-  return axios.post('http://localhost:5000/api/createUser', body , { headers })
+  return axios.post('http://localhost:5000/api/createCustomer', body , { headers })
     .then(({ data }) => {
       return data;
     })
     .catch(error => {
-      return Promise.reject(Error('error', { res }));
+      console.log(error)
+      return Promise.reject(Error('error', { error }));
     });
 }
 
@@ -55,6 +57,6 @@ export const login = (username, password) => {
       return data;
     })
     .catch(error => {
-      return Promise.reject(Error('error', { res }));
+      return Promise.reject(Error('error', { error }));
     });
 }
