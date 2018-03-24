@@ -14,6 +14,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import stripe from 'tipsi-stripe';
 import { doPayment } from 'DollarzApp/src/services/api';
+import CreditCard from '../components/CreditCard'
 
 stripe.init({
   publishableKey: 'pk_test_NXzesZUopyI0RM7xO4HoIEg3',
@@ -22,6 +23,8 @@ stripe.init({
 
 @inject(({ userStore }) => ({
   user: userStore.user,
+  customerStripeSources: userStore.customerStripeSources,
+  getCustomerStripeSources: token => userStore.getCustomerStripeSources(token),
   accessToken: userStore.accessToken,
 }))
 @observer
@@ -33,6 +36,10 @@ class Order extends Component {
       paymentSucceeded: false,
       amountText: '',
     };
+  }
+
+  componentWillMount() {
+    this.props.getCustomerStripeSources(this.props.accessToken)
   }
 
   requestPayment = () => {
@@ -63,6 +70,8 @@ class Order extends Component {
             value={this.state.amountText}
           />
           <Button title={'Nouvelle carte'} style={styles.payment} onPress={this.requestPayment} />
+
+          {this.props.customerStripeSources.map(card => <CreditCard selectedCreditCard={card} />)}
         
           {this.state.paymentPending && (
             <View>

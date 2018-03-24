@@ -15,7 +15,7 @@ module.exports = app => {
         res.json('User not found')
       } else if (user.password === sha512(req.body.password, user.salt).passwordHash) {
         res.status(200)
-        const payload = {user: user.username}
+        const payload = {user: user.username, userId: user.id}
         var token = jwt.sign(payload, app.get('authSecret'), {
           expiresIn: 300
         });

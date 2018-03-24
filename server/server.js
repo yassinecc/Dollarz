@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken')
 const secret = require('./secret.json');
 const stripe = require('stripe')(secret.stripeSecretKey);
+const stripeService = require('./services/stripe')
 
 const Customer = require('./models').Customer;
 
@@ -65,6 +66,20 @@ app.post('/api/doPayment/', (req, res) => {
       res.status(403).send({err: error });
     });
 });
+
+app.get('/api/getCustomerCards/', (req, res) => (
+  Customer.findById(res.locals.decoded.userId)
+    .then(user => {
+      return stripeService.retrieveCustomerSourcesData(user.stripeCustomerId)
+    })
+    .then(cards => {
+      res.status(200).send({customerCards: cards})
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(403).send('ko')
+    })
+))
 
 app.use('/explorer', explorer(settings));
 

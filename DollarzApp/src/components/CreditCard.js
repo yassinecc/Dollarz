@@ -13,10 +13,11 @@ const styles = {
   },
   cardNumber: {
     color: 'rgb(51,51,51)',
-    fontSize: appStyle.font.size.large,
+    fontSize: 17,
     marginBottom: 8,
   },
   creditCardButton: {
+    backgroundColor: 'white',
     borderColor: 'rgb(140, 140, 140)',
     borderWidth: 1,
     borderRadius: 8,

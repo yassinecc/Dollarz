@@ -1,10 +1,9 @@
 const app = require('../server')
-const stripeSecretKey = app.get('stripeSecretKey')
+const stripeSecretKey = require('../secret.json').stripeSecretKey;
 
-const stripe = require('stripe')(stripeSecretKey[process.env.NODE_ENV] || stripeSecretKey.staging)
+const stripe = require('stripe')(stripeSecretKey)
 const momentTz = require('moment-timezone')
 const toNumber = require('lodash/toNumber')
-const logger = require('./logger')
 
 // ⚠️ IMPORTANT ⚠️
 // If you create a service and need to mock it, you need to do so in /server/jest/setup.js
@@ -34,7 +33,7 @@ const chargeFromDeposit = (depositChargeId, amount) => {
     return stripe.charges
       .capture(depositChargeId, { amount: Math.round(amount * 100) })
       .catch(error => {
-        logger.warn(`Error charging from deposit [from chargeFromDeposit]`, { error, depositChargeId, amount })
+        console.log(`Error charging from deposit [from chargeFromDeposit]`, { error, depositChargeId, amount })
         return Promise.reject(error)
       })
   } else {
@@ -51,7 +50,7 @@ const getChargedDepositAmount = depositChargeId =>
       return toNumber(charge.amount) / 100
     })
     .catch(error => {
-      logger.warn(`Error getting charged deposit [from getChargedDepositAmount]`, { error, depositChargeId })
+      console.log(`Error getting charged deposit [from getChargedDepositAmount]`, { error, depositChargeId })
       return 0
     })
 
@@ -59,7 +58,7 @@ const captureSuccessfulBookingCharge = stripeChargeId =>
   stripe.charges
     .capture(stripeChargeId)
     .catch(error => {
-      logger.warn(`Error capturing successful booking charge [from captureSuccessfulBookingCharge]`, { error, stripeChargeId })
+      console.log(`Error capturing successful booking charge [from captureSuccessfulBookingCharge]`, { error, stripeChargeId })
       return Promise.reject(error)
     })
 
@@ -69,7 +68,7 @@ const refundUncapturedCharge = stripeChargeId =>
       charge: stripeChargeId
     })
     .catch(error => {
-      logger.warn(`Error refunding uncaptured charge [from refundUncapturedCharge]`, { error, stripeChargeId })
+      console.log(`Error refunding uncaptured charge [from refundUncapturedCharge]`, { error, stripeChargeId })
       return Promise.reject(error)
     })
 
@@ -80,7 +79,7 @@ const createCustomerWithSource = (stripeTokenId, userEmail) =>
       source: stripeTokenId
     })
     .catch(error => {
-      logger.warn(`Error creating customer [from createCustomerWithSource]`, { error, userEmail, stripeTokenId })
+      console.log(`Error creating customer [from createCustomerWithSource]`, { error, userEmail, stripeTokenId })
       return Promise.reject(error)
     })
 
@@ -92,14 +91,14 @@ const retrieveCustomerAndAddSource = (stripeCustomerId, stripeTokenId, stripeCar
         return stripe.customers.update(stripeCustomerId, { default_source: newSource.id })
       })
       .catch(error => {
-        logger.warn(`Error retrieving customer and adding source [from retrieveCustomerAndAddSource with stripeTokenId]`, { error, stripeCustomerId, stripeTokenId })
+        console.log(`Error retrieving customer and adding source [from retrieveCustomerAndAddSource with stripeTokenId]`, { error, stripeCustomerId, stripeTokenId })
         return Promise.reject(error)
       })
   } else {
     return stripe.customers
       .update(stripeCustomerId, { default_source: stripeCardId })
       .catch(error => {
-        logger.warn(`Error retrieving customer and adding source [from retrieveCustomerAndAddSource with stripeCardId]`, { error, stripeCustomerId, stripeCardId })
+        console.log(`Error retrieving customer and adding source [from retrieveCustomerAndAddSource with stripeCardId]`, { error, stripeCustomerId, stripeCardId })
         return Promise.reject(error)
       })
   }
@@ -122,7 +121,7 @@ const createDepositAndUpdateBooking = (booking, depositAmount, description) => {
       })
     })
     .catch(error => {
-      logger.warn('Error creating deposit', { error })
+      console.log('Error creating deposit', { error })
       return Promise.reject(error)
     })
 }
@@ -133,7 +132,7 @@ const releaseDeposit = booking =>
       charge: booking.depositChargeId
     })
     .catch(error => {
-      logger.warn(`Error releasing deposit of booking [from releaseDeposit]`, { error, booking })
+      console.log(`Error releasing deposit of booking [from releaseDeposit]`, { error, booking })
       return Promise.reject(error)
     })
 
@@ -142,7 +141,7 @@ const retrieveCustomerSourcesData = stripeCustomerId =>
     .retrieve(stripeCustomerId)
     .then(customer => customer.sources.data)
     .catch(error => {
-      logger.warn('Error retreiving customer sources data', { error })
+      console.log('Error retreiving customer sources data', { error })
       return Promise.reject(error)
     })
 

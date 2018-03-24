@@ -1,10 +1,16 @@
 import { observable, action } from 'mobx'
-import { createUser, login } from 'DollarzApp/src/services/api';
+import { createUser, login, fetchCustomerStripeSources } from 'DollarzApp/src/services/api';
 
 class UserStore {
 
   @observable accessToken = null
   @observable user = null
+  @observable customerStripeSources = []
+
+  @action
+  setCustomerStripeSources(customerStripeSources) {
+    this.customerStripeSources.replace(customerStripeSources);
+  }
 
   @action
   login(username, password) {
@@ -30,6 +36,22 @@ class UserStore {
     this.user = null
     return Promise.resolve()
   }
+
+  getCustomerStripeSources = token =>
+  fetchCustomerStripeSources(token)
+    .then(customerStripeSources => {
+      this.setCustomerStripeSources(
+        customerStripeSources.map(sourceData => ({
+          cardId: sourceData.id,
+          last4: sourceData.last4,
+          expMonth: sourceData.exp_month,
+          expYear: sourceData.exp_year,
+          brand: sourceData.brand,
+        }))
+      );
+      return Promise.resolve();
+    })
+    .catch(() => Promise.reject());
 
 }
 
