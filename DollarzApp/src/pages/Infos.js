@@ -43,6 +43,8 @@ class Infos extends Component<StateType> {
           <View style={styles.secondaryContainer}>
             <Text>Veuillez vous connecter ou vous inscrire</Text>
             <TextInput
+              autoCapitalize="none"
+              autoCorrect={false}
               style={styles.textInput}
               value={this.state.username}
               onChangeText={text=>this.setState({username: text})
