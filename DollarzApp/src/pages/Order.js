@@ -40,7 +40,7 @@ class Order extends Component {
       .paymentRequestWithCardForm()
       .then(stripeResponse => {
         this.setState({ paymentPending: true, paymentSucceeded: false });
-        return doPayment(stripeResponse.tokenId, Number(this.state.amountText));
+        return doPayment(stripeResponse.tokenId, Number(this.state.amountText), this.props.accessToken);
       })
       .then(response => {
         this.setState({ paymentPending: false, paymentSucceeded: true });
