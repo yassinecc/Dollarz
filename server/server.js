@@ -1,11 +1,12 @@
 const express = require('express');
 const app = express();
-const apiRoutes = express.Router();
 const explorer = require('express-explorer');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken')
 const secret = require('./secret.json');
 const stripe = require('stripe')(secret.stripeSecretKey);
+
+const Customer = require('./models').Customer;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -13,6 +14,33 @@ app.set('authSecret', secret.jwtSecret)
 
 require('./routes/createCustomer')(app)
 require('./routes/login')(app)
+
+const settings = {
+  format: 'html',
+};
+
+app.use(function(req, res, next) {
+  const token = req.body.token || req.query.token || req.headers['x-access-token'];
+  if (token) {
+    // verifies secret and checks exp
+    jwt.verify(token, app.get('authSecret'), (err, decoded) => {      
+      if (err) {
+        return res.json({ success: false, message: 'Failed to authenticate token.' });    
+      } else {
+        // if everything is good, save to request for use in other routes
+        res.locals.decoded = decoded 
+        next();
+      }
+    });
+  } else {
+    console.log('no token')
+    // if there is no token, return an error
+    return res.status(403).send({ 
+        success: false, 
+        message: 'No token provided.' 
+    });
+  }
+});
 
 app.get('/', (req, res) => {
   res.send('Hello Dev!');
@@ -22,34 +50,8 @@ app.post('/api/test/', (req, res) => {
   res.json({ hey: req.body.first, yo: req.body.second });
 });
 
-const settings = {
-  format: 'html',
-};
-
-apiRoutes.use(function(req, res, next) {
-  const token = req.body.token || req.query.token || req.headers['x-access-token'];
-  if (token) {
-    // verifies secret and checks exp
-    jwt.verify(token, app.get('superSecret'), (err, decoded) => {      
-      if (err) {
-        return res.json({ success: false, message: 'Failed to authenticate token.' });    
-      } else {
-        // if everything is good, save to request for use in other routes
-        req.decoded = decoded;    
-        next();
-      }
-    });
-  } else {
-    // if there is no token, return an error
-    return res.status(403).send({ 
-        success: false, 
-        message: 'No token provided.' 
-    });
-  }
-});
-
 app.post('/api/doPayment/', (req, res) => {
-  stripe.charges
+  return stripe.charges
     .create({
       amount: 100 * req.body.amount,
       currency: 'eur',
@@ -57,16 +59,14 @@ app.post('/api/doPayment/', (req, res) => {
       description: 'Test payment from app',
     })
     .then(stripeResponse => {
-      res.json(stripeResponse);
+      res.status(200).send({stripeResponse: stripeResponse, username: res.locals.decoded.user});
     })
     .catch(error => {
-      res.status(403).send('Error occured', { error });
+      res.status(403).send({err: error });
     });
 });
 
 app.use('/explorer', explorer(settings));
-
-app.use('/api', apiRoutes)
 
 app.listen(5000, function() {
   console.log('Dev app listening on port 5000');

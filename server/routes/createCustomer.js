@@ -1,8 +1,6 @@
 const Customer = require('../models').Customer;
 const { saltHashPassword } = require('../services/crypto')
 
-
-
 module.exports = app => {
   app.post('/api/createCustomer', (req, res) => {
     const { salt, hashedPassword } = saltHashPassword(req.body.password)
