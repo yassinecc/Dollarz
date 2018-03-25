@@ -2,11 +2,12 @@
 
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react/native'
-import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Button, ActivityIndicator } from 'react-native';
 
 @inject(({ userStore }) => ({
   user: userStore.user,
   accessToken: userStore.accessToken,
+  isStoreHydrated: userStore.isStoreHydrated,
   login: (username, password) => userStore.login(username, password),
   signup: (username, password) => userStore.signup(username, password),
   logout: () => userStore.logout()
@@ -29,37 +30,41 @@ class Infos extends Component<StateType> {
     return this.props.signup(this.state.username, this.state.password)
   }
 
+  renderInfoPage = () => (
+    <View>
+  <Text>Ceci est la page d'accueil</Text>
+    {this.props.accessToken && this.props.user ? (
+    <View>
+        <Text>Bienvenue {this.props.user.username} !</Text>
+        <Button title='Déconnexion' onPress={this.props.logout} />
+    </View> ) : (
+      <View style={styles.secondaryContainer}>
+        <Text>Veuillez vous connecter ou vous inscrire</Text>
+        <TextInput
+          autoCapitalize="none"
+          autoCorrect={false}
+          style={styles.textInput}
+          value={this.state.username}
+          onChangeText={text=>this.setState({username: text})
+        }/>
+        <TextInput
+          secureTextEntry
+          style={styles.textInput}
+          value={this.state.password}
+          onChangeText={text=>this.setState({password: text})
+        }/>
+        <Button title={"Nouvel utilisateur"} onPress={this.signup} />
+        <Button title={"Connexion"} onPress={this.login} />
+      </View>
+      )
+      }
+      </View>
+    )
+
   render() {
     return (
       <View style={styles.container}>
-        <Text>Ceci est la page d'accueil</Text>
-        {this.props.accessToken &&
-          <View>
-            <Text>Bienvenue {this.props.user} !</Text>
-            <Button title='Déconnexion' onPress={this.props.logout} />
-          </View>
-        }
-        {!this.props.accessToken && (
-          <View style={styles.secondaryContainer}>
-            <Text>Veuillez vous connecter ou vous inscrire</Text>
-            <TextInput
-              autoCapitalize="none"
-              autoCorrect={false}
-              style={styles.textInput}
-              value={this.state.username}
-              onChangeText={text=>this.setState({username: text})
-            }/>
-            <TextInput
-              secureTextEntry
-              style={styles.textInput}
-              value={this.state.password}
-              onChangeText={text=>this.setState({password: text})
-            }/>
-            <Button title={"Nouvel utilisateur"} onPress={this.signup} />
-            <Button title={"Connexion"} onPress={this.login} />
-          </View>
-          )
-        }
+        {this.props.isStoreHydrated ? this.renderInfoPage() : <ActivityIndicator />}
       </View>
     );
   }

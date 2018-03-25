@@ -1,8 +1,22 @@
+import { AsyncStorage } from 'react-native'
+import { asyncStorageKeys, clearAsyncStorage } from '../services/asyncStorage'
 import { observable, action } from 'mobx'
 import { createUser, login, fetchCustomerStripeSources } from 'DollarzApp/src/services/api';
 
 class UserStore {
+  constructor() {
+    const rehydrateToken = AsyncStorage.getItem(asyncStorageKeys.ACCESS_TOKEN).then(accessToken => {
+      if (accessToken) this.accessToken = accessToken;
+    });
+    const rehydrateUser = AsyncStorage.getItem(asyncStorageKeys.USER_OBJECT).then(user => {
+      if (user) this.user = JSON.parse(user);
+    });
+    Promise.all([rehydrateUser, rehydrateToken]).finally(() => {
+      this.isStoreHydrated = true;
+    });
+  }
 
+  @observable isStoreHydrated = false;
   @observable accessToken = null
   @observable user = null
   @observable customerStripeSources = []
@@ -15,43 +29,45 @@ class UserStore {
   @action
   login(username, password) {
     return login(username, password)
-    .then(data => {
-      this.accessToken = data.accessToken
-      this.user = username
-    })
-    .catch(console.log)
+      .then(data => {
+        this.accessToken = data.accessToken
+        this.user = username
+        AsyncStorage.setItem(asyncStorageKeys.ACCESS_TOKEN, data.accessToken);
+        AsyncStorage.setItem(asyncStorageKeys.USER_OBJECT, JSON.stringify(data.user));
+      })
+      .catch(console.log)
   }
 
   @action signup(username, password) {
     return createUser(username, password)
-    .then(() => {
+      .then(() => {
         return Promise.resolve('Authentication suceeded')
-    })
-    .catch(console.log)
+      })
+      .catch(console.log)
   }
 
   @action
   logout() {
     this.accessToken = null
     this.user = null
-    return Promise.resolve()
+    return clearAsyncStorage()
   }
 
   getCustomerStripeSources = token =>
-  fetchCustomerStripeSources(token)
-    .then(customerStripeSources => {
-      this.setCustomerStripeSources(
-        customerStripeSources.map(sourceData => ({
-          cardId: sourceData.id,
-          last4: sourceData.last4,
-          expMonth: sourceData.exp_month,
-          expYear: sourceData.exp_year,
-          brand: sourceData.brand,
-        }))
-      );
-      return Promise.resolve();
-    })
-    .catch(() => Promise.reject());
+    fetchCustomerStripeSources(token)
+      .then(customerStripeSources => {
+        this.setCustomerStripeSources(
+          customerStripeSources.map(sourceData => ({
+            cardId: sourceData.id,
+            last4: sourceData.last4,
+            expMonth: sourceData.exp_month,
+            expYear: sourceData.exp_year,
+            brand: sourceData.brand,
+          }))
+        );
+        return Promise.resolve();
+      })
+      .catch(() => Promise.reject());
 
 }
 

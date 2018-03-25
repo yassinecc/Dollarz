@@ -17,9 +17,9 @@ module.exports = app => {
         res.status(200)
         const payload = {user: user.username, userId: user.id}
         var token = jwt.sign(payload, app.get('authSecret'), {
-          expiresIn: 300
+          expiresIn: 600
         });
-        res.json({ message: 'Login OK', accessToken: token })
+        res.json({ message: 'Login OK', accessToken: token, user: user })
       }
       else {
         res.status(403)
