@@ -75,8 +75,7 @@ class Order extends Component {
   render() {
     return (
       <ScrollView contentContainerStyle={styles.container}>
-        {!this.props.accessToken && <Text>Vous devez être connecté pour voir cette page</Text>}
-        {this.props.accessToken && (
+        {this.props.accessToken ? (
           <View>
             <TextInput
               keyboardType={'numeric'}
@@ -121,6 +120,8 @@ class Order extends Component {
               </View>
             )}
           </View>
+        ) : (
+          <Text>Vous devez être connecté pour voir cette page</Text>
         )}
       </ScrollView>
     );
