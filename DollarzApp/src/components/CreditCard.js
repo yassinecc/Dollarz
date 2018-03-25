@@ -45,40 +45,46 @@ const styles = {
   logo: {
     width: 56,
     height: 40,
-  }
+  },
 };
 
 const selectCreditCardLogo = (brand: string) => {
   switch (brand) {
     case 'Visa':
-      return visa
+      return visa;
     case 'American Express':
-      return amex
+      return amex;
     case 'MasterCard':
-      return mastercard
+      return mastercard;
     default:
-      return visa
+      return visa;
   }
-}
+};
 
 const CreditCard = (props: PropsType) => {
   const expiryMonth = formatExpiryMonth(props.selectedCreditCard.expMonth);
   const expiryYear = formatExpiryYear(props.selectedCreditCard.expYear);
   return (
     <TouchableOpacity
-      style={props.isSelected ? [styles.creditCardButton, styles.selectedCard] : styles.creditCardButton}
+      style={
+        props.isSelected ? [styles.creditCardButton, styles.selectedCard] : styles.creditCardButton
+      }
       onPress={props.onCreditCardChoice}
       onLayout={props.onLayout}
     >
       <View style={styles.flexRowContainer}>
-        <Image source={selectCreditCardLogo(props.selectedCreditCard.brand)} style={styles.logo} resizeMode='contain' />
+        <Image
+          source={selectCreditCardLogo(props.selectedCreditCard.brand)}
+          style={styles.logo}
+          resizeMode="contain"
+        />
         <Text style={styles.text}>{'carte perso'}</Text>
       </View>
       <Text style={styles.cardNumber}>**** **** **** {props.selectedCreditCard.last4}</Text>
       <Text style={styles.expirationDate}>
         expire à fin {expiryMonth}/{expiryYear}
       </Text>
-    </TouchableOpacity >
+    </TouchableOpacity>
   );
 };
 

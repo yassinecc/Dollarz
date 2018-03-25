@@ -1,8 +1,8 @@
 // @flow
 
 import React, { Component } from 'react';
-import { Provider } from 'mobx-react/native'
-import { userStore } from 'DollarzApp/src/stores'
+import { Provider } from 'mobx-react/native';
+import { userStore } from 'DollarzApp/src/stores';
 import TabScreen from './pages/TabScreen';
 
 type Props = {};

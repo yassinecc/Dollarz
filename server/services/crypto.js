@@ -40,5 +40,5 @@ function saltHashPassword(userPassword) {
 
 module.exports = {
   saltHashPassword,
-  sha512
+  sha512,
 };

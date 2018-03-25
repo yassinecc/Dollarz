@@ -1,6 +1,6 @@
-import { AsyncStorage } from 'react-native'
-import { asyncStorageKeys, clearAsyncStorage } from '../services/asyncStorage'
-import { observable, action } from 'mobx'
+import { AsyncStorage } from 'react-native';
+import { asyncStorageKeys, clearAsyncStorage } from '../services/asyncStorage';
+import { observable, action } from 'mobx';
 import { createUser, login, fetchCustomerStripeSources } from 'DollarzApp/src/services/api';
 
 class UserStore {
@@ -17,9 +17,9 @@ class UserStore {
   }
 
   @observable isStoreHydrated = false;
-  @observable accessToken = null
-  @observable user = null
-  @observable customerStripeSources = []
+  @observable accessToken = null;
+  @observable user = null;
+  @observable customerStripeSources = [];
 
   @action
   setCustomerStripeSources(customerStripeSources) {
@@ -30,27 +30,28 @@ class UserStore {
   login(username, password) {
     return login(username, password)
       .then(data => {
-        this.accessToken = data.accessToken
-        this.user = username
+        this.accessToken = data.accessToken;
+        this.user = username;
         AsyncStorage.setItem(asyncStorageKeys.ACCESS_TOKEN, data.accessToken);
         AsyncStorage.setItem(asyncStorageKeys.USER_OBJECT, JSON.stringify(data.user));
       })
-      .catch(console.log)
+      .catch(console.log);
   }
 
-  @action signup(username, password) {
+  @action
+  signup(username, password) {
     return createUser(username, password)
       .then(() => {
-        return Promise.resolve('Authentication suceeded')
+        return Promise.resolve('Authentication suceeded');
       })
-      .catch(console.log)
+      .catch(console.log);
   }
 
   @action
   logout() {
-    this.accessToken = null
-    this.user = null
-    return clearAsyncStorage()
+    this.accessToken = null;
+    this.user = null;
+    return clearAsyncStorage();
   }
 
   getCustomerStripeSources = token =>
@@ -68,9 +69,8 @@ class UserStore {
         return Promise.resolve();
       })
       .catch(() => Promise.reject());
-
 }
 
-const singleton = new UserStore()
+const singleton = new UserStore();
 
-export default singleton
+export default singleton;

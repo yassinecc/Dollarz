@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
-import { observer, inject } from 'mobx-react/native'
+import { observer, inject } from 'mobx-react/native';
 import {
   StyleSheet,
   View,
@@ -14,12 +14,11 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import stripe from 'tipsi-stripe';
 import { doPayment } from 'DollarzApp/src/services/api';
-import CreditCard from '../components/CreditCard'
+import CreditCard from '../components/CreditCard';
 
 stripe.init({
   publishableKey: 'pk_test_NXzesZUopyI0RM7xO4HoIEg3',
 });
-
 
 @inject(({ userStore }) => ({
   user: userStore.user,
@@ -40,25 +39,29 @@ class Order extends Component {
   }
 
   componentWillMount() {
-    this.props.getCustomerStripeSources(this.props.accessToken)
+    this.props.getCustomerStripeSources(this.props.accessToken);
   }
 
-  onCreditCardChoice = (stripeCardInfo) => {
+  onCreditCardChoice = stripeCardInfo => {
     if (stripeCardInfo.card.brand === 'Visa' || stripeCardInfo.card.brand === 'MasterCard') {
       this.setState({ cardChoice: { stripeInfo: stripeCardInfo } });
     } else this.props.showToaster('cardTypeError');
   };
 
   addNewCard = () => {
-    stripe
-    .paymentRequestWithCardForm()
-    .then(stripeResponse => {
-      this.setState({cardChoice: { stripeInfo: { card: {cardId: ''}, tokenId: stripeResponse.tokenId }}})
-    })
-  }
+    stripe.paymentRequestWithCardForm().then(stripeResponse => {
+      this.setState({
+        cardChoice: { stripeInfo: { card: { cardId: '' }, tokenId: stripeResponse.tokenId } },
+      });
+    });
+  };
 
   requestPayment = () => {
-    return doPayment(this.state.cardChoice.stripeInfo, Number(this.state.amountText), this.props.accessToken)
+    return doPayment(
+      this.state.cardChoice.stripeInfo,
+      Number(this.state.amountText),
+      this.props.accessToken
+    )
       .then(response => {
         this.setState({ paymentPending: false, paymentSucceeded: true });
       })
@@ -68,44 +71,49 @@ class Order extends Component {
   render() {
     return (
       <ScrollView contentContainerStyle={styles.container}>
-      {!this.props.accessToken && 
-        <Text>Vous devez être connecté pour voir cette page</Text>
-      }
-      {this.props.accessToken && 
-        <View>
-          <TextInput
-            keyboardType={'numeric'}
-            style={styles.textInput}
-            onChangeText={text => this.setState({ amountText: text })}
-            value={this.state.amountText}
-          />
-          <Button title={'Nouvelle carte'} style={styles.payment} onPress={this.addNewCard} />
-          <ScrollView horizontal showsHorizontalScrollIndicator contentContainerStyle={styles.creditCardContainer}>
-            {this.props.customerStripeSources.map(card => (
-              <View style={styles.creditCardContainer} key={card.cardId}>
-                <CreditCard
-                  selectedCreditCard={card}
-                  isSelected={!!this.state.cardChoice && (this.state.cardChoice.stripeInfo.card.cardId === card.cardId)}
-                  onCreditCardChoice={() => this.onCreditCardChoice({ card, tokenId: '' })}
-                />
+        {!this.props.accessToken && <Text>Vous devez être connecté pour voir cette page</Text>}
+        {this.props.accessToken && (
+          <View>
+            <TextInput
+              keyboardType={'numeric'}
+              style={styles.textInput}
+              onChangeText={text => this.setState({ amountText: text })}
+              value={this.state.amountText}
+            />
+            <Button title={'Nouvelle carte'} style={styles.payment} onPress={this.addNewCard} />
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator
+              contentContainerStyle={styles.creditCardContainer}
+            >
+              {this.props.customerStripeSources.map(card => (
+                <View style={styles.creditCardContainer} key={card.cardId}>
+                  <CreditCard
+                    selectedCreditCard={card}
+                    isSelected={
+                      !!this.state.cardChoice &&
+                      this.state.cardChoice.stripeInfo.card.cardId === card.cardId
+                    }
+                    onCreditCardChoice={() => this.onCreditCardChoice({ card, tokenId: '' })}
+                  />
+                </View>
+              ))}
+            </ScrollView>
+            <Button title={'Payer'} style={styles.payment} onPress={this.requestPayment} />
+            {this.state.paymentPending && (
+              <View>
+                <Text>Paiement en cours</Text>
+                <ActivityIndicator />
               </View>
-            ))}
-          </ScrollView>
-          <Button title={'Payer'} style={styles.payment} onPress={this.requestPayment} />
-          {this.state.paymentPending && (
-            <View>
-              <Text>Paiement en cours</Text>
-              <ActivityIndicator />
-            </View>
-          )}
-          {this.state.paymentSucceeded && (
-            <View>
-              <Text>Paiement réussi!</Text>
-              <Icon name="ios-checkmark-circle" size={30} color={'rgb(130,219,9)'} />
-            </View>
-          )}
+            )}
+            {this.state.paymentSucceeded && (
+              <View>
+                <Text>Paiement réussi!</Text>
+                <Icon name="ios-checkmark-circle" size={30} color={'rgb(130,219,9)'} />
+              </View>
+            )}
           </View>
-        }
+        )}
       </ScrollView>
     );
   }
@@ -129,8 +137,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   creditCardContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
 });
 
-export default Order
+export default Order;
