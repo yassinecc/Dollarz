@@ -66,7 +66,6 @@ class Order extends Component {
   };
 
   render() {
-    console.log(this.state.cardChoice)
     return (
       <ScrollView contentContainerStyle={styles.container}>
       {!this.props.accessToken && 

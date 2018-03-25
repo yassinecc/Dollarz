@@ -28,11 +28,9 @@ export const doPayment = (customerCard, amount, accessToken) => {
   }
   return axios.post('http://localhost:5000/api/doPayment', body, { headers })
     .then(({ data }) => {
-      console.log(data)
       return data; 
     })
     .catch(error => {
-      console.log(error)
       return Promise.reject(Error(error))
     })
 };
@@ -52,7 +50,6 @@ export const createUser = (username, password) => {
       return data;
     })
     .catch(error => {
-      console.log(error)
       return Promise.reject(Error('error', { error }));
     });
 }
@@ -69,7 +66,6 @@ export const login = (username, password) => {
 
   return axios.post('http://localhost:5000/api/login', body , { headers })
     .then(({ data }) => {
-      console.log('login ok')
       return data;
     })
     .catch(error => {
