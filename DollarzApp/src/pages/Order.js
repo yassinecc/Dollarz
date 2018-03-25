@@ -35,11 +35,15 @@ class Order extends Component {
       paymentSucceeded: false,
       amountText: '',
       cardChoice: null,
+      isFetchingStripeSources: false,
     };
   }
 
   componentWillMount() {
-    this.props.getCustomerStripeSources(this.props.accessToken);
+    this.setState({ isFetchingStripeSources: true });
+    return this.props.getCustomerStripeSources(this.props.accessToken).then(() => {
+      this.setState({ isFetchingStripeSources: false });
+    });
   }
 
   onCreditCardChoice = stripeCardInfo => {
@@ -81,24 +85,28 @@ class Order extends Component {
               value={this.state.amountText}
             />
             <Button title={'Nouvelle carte'} style={styles.payment} onPress={this.addNewCard} />
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator
-              contentContainerStyle={styles.creditCardContainer}
-            >
-              {this.props.customerStripeSources.map(card => (
-                <View style={styles.creditCardContainer} key={card.cardId}>
-                  <CreditCard
-                    selectedCreditCard={card}
-                    isSelected={
-                      !!this.state.cardChoice &&
-                      this.state.cardChoice.stripeInfo.card.cardId === card.cardId
-                    }
-                    onCreditCardChoice={() => this.onCreditCardChoice({ card, tokenId: '' })}
-                  />
-                </View>
-              ))}
-            </ScrollView>
+            {this.state.isFetchingStripeSources ? (
+              <ActivityIndicator />
+            ) : (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator
+                contentContainerStyle={styles.creditCardContainer}
+              >
+                {this.props.customerStripeSources.map(card => (
+                  <View style={styles.creditCardContainer} key={card.cardId}>
+                    <CreditCard
+                      selectedCreditCard={card}
+                      isSelected={
+                        !!this.state.cardChoice &&
+                        this.state.cardChoice.stripeInfo.card.cardId === card.cardId
+                      }
+                      onCreditCardChoice={() => this.onCreditCardChoice({ card, tokenId: '' })}
+                    />
+                  </View>
+                ))}
+              </ScrollView>
+            )}
             <Button title={'Payer'} style={styles.payment} onPress={this.requestPayment} />
             {this.state.paymentPending && (
               <View>
