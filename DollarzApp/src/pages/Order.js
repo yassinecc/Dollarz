@@ -13,8 +13,10 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import stripe from 'tipsi-stripe';
+import CheckBox from 'react-native-check-box';
 import { doPayment } from 'DollarzApp/src/services/api';
 import CreditCard from '../components/CreditCard';
+import { offerMap } from '../services/offerMap';
 
 stripe.init({
   publishableKey: 'pk_test_NXzesZUopyI0RM7xO4HoIEg3',
@@ -33,9 +35,9 @@ class Order extends Component {
     this.state = {
       paymentPending: false,
       paymentSucceeded: false,
-      amountText: '',
       cardChoice: null,
       isFetchingStripeSources: false,
+      selectedOffer: undefined,
     };
   }
 
@@ -63,7 +65,7 @@ class Order extends Component {
   requestPayment = () => {
     return doPayment(
       this.state.cardChoice.stripeInfo,
-      Number(this.state.amountText),
+      Number(this.state.selectedOffer.price),
       this.props.accessToken
     )
       .then(response => {
@@ -72,17 +74,27 @@ class Order extends Component {
       .catch(console.log);
   };
 
+  toggleOffer = offer => {
+    this.state.selectedOffer && this.state.selectedOffer.id === offer.id
+      ? this.setState({ selectedOffer: undefined })
+      : this.setState({ selectedOffer: offer });
+  };
+
   render() {
     return (
       <ScrollView contentContainerStyle={styles.container}>
         {this.props.accessToken ? (
           <View>
-            <TextInput
-              keyboardType={'numeric'}
-              style={styles.textInput}
-              onChangeText={text => this.setState({ amountText: text })}
-              value={this.state.amountText}
-            />
+            {offerMap.map(offer => (
+              <CheckBox
+                key={offer.id}
+                leftText={offer.name}
+                rightText={`${offer.price.toString()} €`}
+                rightTextStyle={{ flex: 0, width: 40 }}
+                onClick={() => this.toggleOffer(offer)}
+                isChecked={this.state.selectedOffer && this.state.selectedOffer.id === offer.id}
+              />
+            ))}
             <Button title={'Nouvelle carte'} style={styles.payment} onPress={this.addNewCard} />
             {this.state.isFetchingStripeSources ? (
               <ActivityIndicator />
@@ -106,7 +118,13 @@ class Order extends Component {
                 ))}
               </ScrollView>
             )}
-            <Button title={'Payer'} style={styles.payment} onPress={this.requestPayment} />
+            {this.state.selectedOffer && (
+              <Button
+                title={`Payer ${this.state.selectedOffer.price} €`}
+                style={styles.payment}
+                onPress={this.requestPayment}
+              />
+            )}
             {this.state.paymentPending && (
               <View>
                 <Text>Paiement en cours</Text>
