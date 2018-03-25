@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   TextInput,
 } from 'react-native';
+
 import Icon from 'react-native-vector-icons/Ionicons';
 import stripe from 'tipsi-stripe';
 import CheckBox from 'react-native-check-box';
