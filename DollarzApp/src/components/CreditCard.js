@@ -29,7 +29,7 @@ const styles = {
     justifyContent: 'space-between',
   },
   selectedCard: {
-    borderColor: 'rgb(239, 51, 64)',
+    borderColor: 'rgb(18,132,255)',
   },
   expirationDate: {
     color: 'rgb(51,51,51)',

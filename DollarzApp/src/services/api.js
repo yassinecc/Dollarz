@@ -16,11 +16,11 @@ export const fetchCustomerStripeSources = (accessToken) => {
     })
 }
 
-export const doPayment = (stripeTokenId, amount, accessToken) => {
+export const doPayment = (customerCard, amount, accessToken) => {
   const body = {
-    tokenId: stripeTokenId,
+    tokenId: customerCard.tokenId,
     amount: amount,
-    cardId: '',
+    cardId: customerCard.card.cardId,
   }
   const headers = {
     'Content-Type': 'application/json',

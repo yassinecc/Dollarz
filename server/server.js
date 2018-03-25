@@ -4,7 +4,6 @@ const explorer = require('express-explorer');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken')
 const secret = require('./secret.json');
-const stripe = require('stripe')(secret.stripeSecretKey);
 const stripeService = require('./services/stripe')
 
 const Customer = require('./models').Customer;
@@ -52,12 +51,12 @@ app.post('/api/test/', (req, res) => {
 });
 
 app.post('/api/doPayment/', (req, res) => {
-  return stripe.charges
-    .create({
-      amount: 100 * req.body.amount,
-      currency: 'eur',
-      source: req.body.tokenId,
-      description: 'Test payment from app',
+  Customer.findById(res.locals.decoded.userId)
+    .then(user => {
+      return stripeService.retrieveCustomerAndAddSource(user.stripeCustomerId, req.body.tokenId, req.body.cardId)
+    })
+    .then(stripeCustomer => {
+      return stripeService.createCharge(stripeCustomer.id, stripeCustomer.default_source, req.body.amount, true, 'Test payment', {})
     })
     .then(stripeResponse => {
       res.status(200).send({stripeResponse: stripeResponse, username: res.locals.decoded.user});

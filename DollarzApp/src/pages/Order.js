@@ -35,6 +35,7 @@ class Order extends Component {
       paymentPending: false,
       paymentSucceeded: false,
       amountText: '',
+      cardChoice: null,
     };
   }
 
@@ -42,13 +43,22 @@ class Order extends Component {
     this.props.getCustomerStripeSources(this.props.accessToken)
   }
 
-  requestPayment = () => {
+  onCreditCardChoice = (stripeCardInfo) => {
+    if (stripeCardInfo.card.brand === 'Visa' || stripeCardInfo.card.brand === 'MasterCard') {
+      this.setState({ cardChoice: { stripeInfo: stripeCardInfo } });
+    } else this.props.showToaster('cardTypeError');
+  };
+
+  addNewCard = () => {
     stripe
-      .paymentRequestWithCardForm()
-      .then(stripeResponse => {
-        this.setState({ paymentPending: true, paymentSucceeded: false });
-        return doPayment(stripeResponse.tokenId, Number(this.state.amountText), this.props.accessToken);
-      })
+    .paymentRequestWithCardForm()
+    .then(stripeResponse => {
+      this.setState({cardChoice: { stripeInfo: { card: {cardId: ''}, tokenId: stripeResponse.tokenId }}})
+    })
+  }
+
+  requestPayment = () => {
+    return doPayment(this.state.cardChoice.stripeInfo, Number(this.state.amountText), this.props.accessToken)
       .then(response => {
         this.setState({ paymentPending: false, paymentSucceeded: true });
       })
@@ -56,6 +66,7 @@ class Order extends Component {
   };
 
   render() {
+    console.log(this.state.cardChoice)
     return (
       <ScrollView contentContainerStyle={styles.container}>
       {!this.props.accessToken && 
@@ -69,10 +80,19 @@ class Order extends Component {
             onChangeText={text => this.setState({ amountText: text })}
             value={this.state.amountText}
           />
-          <Button title={'Nouvelle carte'} style={styles.payment} onPress={this.requestPayment} />
-
-          {this.props.customerStripeSources.map(card => <CreditCard selectedCreditCard={card} />)}
-        
+          <Button title={'Nouvelle carte'} style={styles.payment} onPress={this.addNewCard} />
+          <ScrollView horizontal showsHorizontalScrollIndicator contentContainerStyle={styles.creditCardContainer}>
+            {this.props.customerStripeSources.map(card => (
+              <View style={styles.creditCardContainer} key={card.cardId}>
+                <CreditCard
+                  selectedCreditCard={card}
+                  isSelected={!!this.state.cardChoice && (this.state.cardChoice.stripeInfo.card.cardId === card.cardId)}
+                  onCreditCardChoice={() => this.onCreditCardChoice({ card, tokenId: '' })}
+                />
+              </View>
+            ))}
+          </ScrollView>
+          <Button title={'Payer'} style={styles.payment} onPress={this.requestPayment} />
           {this.state.paymentPending && (
             <View>
               <Text>Paiement en cours</Text>
@@ -96,10 +116,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
   textInput: {
+    alignSelf: 'center',
     height: 40,
     width: 150,
     padding: 2,
@@ -108,6 +128,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: 'white',
     textAlign: 'center',
+  },
+  creditCardContainer: {
+    flexDirection: 'row'
   },
 });
 
