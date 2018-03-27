@@ -34,7 +34,7 @@ class Order extends Component {
   constructor() {
     super();
     this.state = {
-      paymentPending: false,
+      isPaymentPending: false,
       paymentSucceeded: false,
       cardChoice: null,
       isFetchingStripeSources: false,
@@ -44,9 +44,14 @@ class Order extends Component {
 
   componentWillMount() {
     this.setState({ isFetchingStripeSources: true });
-    return this.props.getCustomerStripeSources(this.props.accessToken).then(() => {
-      this.setState({ isFetchingStripeSources: false });
-    });
+    return this.props
+      .getCustomerStripeSources(this.props.accessToken)
+      .catch(error => {
+        console.warn(error);
+      })
+      .finally(() => {
+        this.setState({ isFetchingStripeSources: false });
+      });
   }
 
   onCreditCardChoice = stripeCardInfo => {
@@ -64,13 +69,14 @@ class Order extends Component {
   };
 
   requestPayment = () => {
+    this.setState({ isPaymentPending: true });
     return doPayment(
       this.state.cardChoice.stripeInfo,
       Number(this.state.selectedOffer.price),
       this.props.accessToken
     )
       .then(response => {
-        this.setState({ paymentPending: false, paymentSucceeded: true });
+        this.setState({ isPaymentPending: false, paymentSucceeded: true });
       })
       .catch(console.log);
   };
@@ -82,6 +88,7 @@ class Order extends Component {
   };
 
   render() {
+    console.log(this.state.cardChoice);
     return (
       <ScrollView contentContainerStyle={styles.container}>
         {this.props.accessToken ? (
@@ -96,7 +103,7 @@ class Order extends Component {
                 isChecked={this.state.selectedOffer && this.state.selectedOffer.id === offer.id}
               />
             ))}
-            <Button title={'Nouvelle carte'} style={styles.payment} onPress={this.addNewCard} />
+            <Button title={'Nouvelle carte'} onPress={this.addNewCard} />
             {this.state.isFetchingStripeSources ? (
               <ActivityIndicator />
             ) : (
@@ -119,21 +126,23 @@ class Order extends Component {
                 ))}
               </ScrollView>
             )}
-            {this.state.selectedOffer && (
-              <Button
-                title={`Payer ${this.state.selectedOffer.price} €`}
-                style={styles.payment}
-                onPress={this.requestPayment}
-              />
-            )}
-            {this.state.paymentPending && (
-              <View>
+            {!this.state.paymentSucceeded &&
+              !this.state.isPaymentPending &&
+              this.state.selectedOffer && (
+                <Button
+                  title={`Payer ${this.state.selectedOffer.price} €`}
+                  onPress={this.requestPayment}
+                  disabled={!this.state.cardChoice}
+                />
+              )}
+            {this.state.isPaymentPending && (
+              <View style={{ alignSelf: 'center' }}>
                 <Text>Paiement en cours</Text>
                 <ActivityIndicator />
               </View>
             )}
             {this.state.paymentSucceeded && (
-              <View>
+              <View style={{ alignItems: 'center' }}>
                 <Text>Paiement réussi!</Text>
                 <Icon name="ios-checkmark-circle" size={30} color={'rgb(130,219,9)'} />
               </View>

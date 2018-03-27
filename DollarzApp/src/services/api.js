@@ -12,8 +12,7 @@ export const fetchCustomerStripeSources = accessToken => {
       return data.customerCards;
     })
     .catch(error => {
-      console.log('Error in getting customer cards', error.response);
-      return Promise.reject(Error(error.response));
+      return Promise.reject(error.message);
     });
 };
 
@@ -54,6 +53,21 @@ export const createUser = (username, password) => {
     })
     .catch(error => {
       return Promise.reject(Error('error', { error }));
+    });
+};
+
+export const checkAuth = accessToken => {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  return axios
+    .get('http://localhost:5000/api/checkAuth', { headers })
+    .then(() => {
+      return Promise.resolve();
+    })
+    .catch(() => {
+      return Promise.reject(Error('Authentication failed'));
     });
 };
 

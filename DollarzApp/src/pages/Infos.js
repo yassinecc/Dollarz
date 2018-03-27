@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react/native';
 import { StyleSheet, View, Text, TextInput, Button, ActivityIndicator } from 'react-native';
+import { checkAuth } from 'DollarzApp/src/services/api';
 
 @inject(({ userStore }) => ({
   user: userStore.user,
@@ -19,11 +20,24 @@ class Infos extends Component<StateType> {
     this.state = {
       username: '',
       password: '',
+      isAuthenticated: false,
     };
   }
 
+  componentWillMount() {
+    return checkAuth(this.props.accessToken)
+      .then(() => {
+        this.setState({ isAuthenticated: true });
+      })
+      .catch(() => {
+        this.setState({ isAuthenticated: false });
+      });
+  }
+
   login = () => {
-    return this.props.login(this.state.username, this.state.password);
+    return this.props
+      .login(this.state.username, this.state.password)
+      .then(() => this.setState({ isAuthenticated: true }));
   };
   signup = () => {
     return this.props.signup(this.state.username, this.state.password);
@@ -32,7 +46,7 @@ class Infos extends Component<StateType> {
   renderInfoPage = () => (
     <View>
       <Text>Ceci est la page d'accueil</Text>
-      {this.props.accessToken && this.props.user ? (
+      {this.state.isAuthenticated && this.props.accessToken && this.props.user ? (
         <View>
           <Text>Bienvenue {this.props.user.username} !</Text>
           <Button title="Déconnexion" onPress={this.props.logout} />

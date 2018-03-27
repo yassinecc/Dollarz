@@ -16,7 +16,7 @@ module.exports = app => {
         res.status(200);
         const payload = { user: user.username, userId: user.id };
         var token = jwt.sign(payload, app.get('authSecret'), {
-          expiresIn: 600,
+          expiresIn: 3600,
         });
         res.json({ message: 'Login OK', accessToken: token, user: user });
       } else {

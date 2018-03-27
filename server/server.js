@@ -25,7 +25,7 @@ app.use(function(req, res, next) {
     // verifies secret and checks exp
     jwt.verify(token, app.get('authSecret'), (err, decoded) => {
       if (err) {
-        return res.json({ success: false, message: 'Failed to authenticate token.' });
+        return res.status(401).json({ success: false, message: 'Failed to authenticate token.' });
       } else {
         // if everything is good, save to request for use in other routes
         res.locals.decoded = decoded;
@@ -33,7 +33,6 @@ app.use(function(req, res, next) {
       }
     });
   } else {
-    console.log('no token');
     // if there is no token, return an error
     return res.status(403).send({
       success: false,
@@ -42,12 +41,8 @@ app.use(function(req, res, next) {
   }
 });
 
-app.get('/', (req, res) => {
-  res.send('Hello Dev!');
-});
-
-app.post('/api/test/', (req, res) => {
-  res.json({ hey: req.body.first, yo: req.body.second });
+app.post('/api/checkAuth/', (req, res) => {
+  res.status.send('OK');
 });
 
 app.post('/api/doPayment/', (req, res) => {

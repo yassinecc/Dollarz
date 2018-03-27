@@ -68,7 +68,7 @@ class UserStore {
         );
         return Promise.resolve();
       })
-      .catch(() => Promise.reject());
+      .catch(Promise.reject);
 }
 
 const singleton = new UserStore();

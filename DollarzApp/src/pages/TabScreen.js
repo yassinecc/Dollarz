@@ -14,7 +14,7 @@ const tabBarIcon = (routeName, focused, tintColor) => {
   return <Icon name={iconName} size={25} color={tintColor} />;
 };
 
-const tabNavigatorOptionsss = ({ navigation }) => ({
+const tabNavigatorOptions = ({ navigation }) => ({
   tabBarIcon: ({ focused, tintColor }) => {
     const { routeName } = navigation.state;
     return tabBarIcon(routeName, focused, tintColor);
@@ -27,7 +27,7 @@ export default TabNavigator(
     Commander: { screen: Pages.Order },
   },
   {
-    navigationOptions: tabNavigatorOptionsss,
+    navigationOptions: tabNavigatorOptions,
     tabBarOptions: {
       activeTintColor: 'rgb(18,132,255)',
     },
