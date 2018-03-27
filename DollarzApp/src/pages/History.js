@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     backgroundColor: '#F5FCFF',
+    paddingHorizontal: 16,
   },
   textInput: {
     alignSelf: 'center',

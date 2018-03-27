@@ -92,16 +92,18 @@ class Order extends Component {
       <ScrollView contentContainerStyle={styles.container}>
         {this.props.accessToken ? (
           <View>
-            {offerMap.map(offer => (
-              <CheckBox
-                key={offer.id}
-                leftText={offer.name}
-                rightText={`${offer.price.toString()} €`}
-                rightTextStyle={{ flex: 0, width: 40 }}
-                onClick={() => this.toggleOffer(offer)}
-                isChecked={this.state.selectedOffer && this.state.selectedOffer.id === offer.id}
-              />
-            ))}
+            <View style={styles.offers}>
+              {offerMap.map(offer => (
+                <CheckBox
+                  key={offer.id}
+                  leftText={offer.name}
+                  rightText={`${offer.price.toString()} €`}
+                  rightTextStyle={{ flex: 0, width: 40 }}
+                  onClick={() => this.toggleOffer(offer)}
+                  isChecked={this.state.selectedOffer && this.state.selectedOffer.id === offer.id}
+                />
+              ))}
+            </View>
             <Button title={'Nouvelle carte'} onPress={this.addNewCard} />
             {this.state.isFetchingStripeSources ? (
               <ActivityIndicator />
@@ -174,6 +176,9 @@ const styles = StyleSheet.create({
   },
   creditCardContainer: {
     flexDirection: 'row',
+  },
+  offers: {
+    marginHorizontal: 16,
   },
 });
 
