@@ -2,22 +2,53 @@
 
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react/native';
-import { StyleSheet, View } from 'react-native';
-import { offerMap } from '../services/offerMap';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
-@inject(({ userStore }) => ({
-  user: userStore.user,
+@inject(({ userStore, orderStore }) => ({
   accessToken: userStore.accessToken,
+  getStripeOrders: accessToken => orderStore.getStripeOrders(accessToken),
+  orders: orderStore.orders.slice(),
 }))
 @observer
 class History extends Component {
   constructor() {
     super();
-    this.state = {};
+    this.state = {
+      isReady: false,
+      selectedOrderId: undefined,
+    };
   }
 
+  componentWillMount() {
+    return this.props.getStripeOrders(this.props.accessToken).then(
+      this.setState({
+        isReady: true,
+      })
+    );
+  }
+
+  onOrderPress = order => {
+    this.setState({ selectedOrderId: order.id });
+  };
+
+  doRefund = id => {};
+
   render() {
-    return <View style={styles.container} />;
+    console.log(this.state.selectedOrder);
+    return (
+      <View style={styles.container}>
+        {this.props.orders.map(order => (
+          <TouchableOpacity key={order.id} onPress={() => this.onOrderPress(order)}>
+            <Text>{order.description}</Text>
+            {this.state.selectedOrderId === order.id && (
+              <TouchableOpacity>
+                <Text>Demander remboursement</Text>
+              </TouchableOpacity>
+            )}
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
   }
 }
 
