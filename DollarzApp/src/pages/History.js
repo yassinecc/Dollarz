@@ -8,6 +8,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
   accessToken: userStore.accessToken,
   getStripeOrders: accessToken => orderStore.getStripeOrders(accessToken),
   orders: orderStore.orders.slice(),
+  refundOrder: (token, id) => orderStore.refundOrder(token, id),
 }))
 @observer
 class History extends Component {
@@ -31,7 +32,9 @@ class History extends Component {
     this.setState({ selectedOrderId: order.id });
   };
 
-  doRefund = id => {};
+  doRefund = () => {
+    return this.props.refundOrder(this.props.accessToken, this.state.selectedOrderId);
+  };
 
   render() {
     console.log(this.state.selectedOrder);
@@ -41,7 +44,7 @@ class History extends Component {
           <TouchableOpacity key={order.id} onPress={() => this.onOrderPress(order)}>
             <Text>{order.description}</Text>
             {this.state.selectedOrderId === order.id && (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={this.doRefund}>
                 <Text>Demander remboursement</Text>
               </TouchableOpacity>
             )}

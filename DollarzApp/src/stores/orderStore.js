@@ -1,7 +1,7 @@
 import { AsyncStorage } from 'react-native';
 import { asyncStorageKeys, clearAsyncStorage } from '../services/asyncStorage';
 import { observable, action } from 'mobx';
-import { fetchStripeOrders } from 'DollarzApp/src/services/api';
+import { fetchStripeOrders, refundStripeOrder } from 'DollarzApp/src/services/api';
 
 class OrderStore {
   @observable orders = [];
@@ -14,6 +14,11 @@ class OrderStore {
         return result;
       })
       .catch(Promise.reject);
+
+  @action
+  refundOrder = (token, chargeId) => {
+    refundStripeOrder(token, chargeId).then(console.log);
+  };
 }
 
 const singleton = new OrderStore();

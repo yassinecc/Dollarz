@@ -37,13 +37,13 @@ const captureSuccessfulBookingCharge = stripeChargeId =>
     return Promise.reject(error);
   });
 
-const refundUncapturedCharge = stripeChargeId =>
+const refundCharge = stripeChargeId =>
   stripe.refunds
     .create({
       charge: stripeChargeId,
     })
     .catch(error => {
-      console.log(`Error refunding uncaptured charge [from refundUncapturedCharge]`, {
+      console.log(`Error refunding uncaptured charge [from refundCharge]`, {
         error,
         stripeChargeId,
       });
@@ -107,7 +107,7 @@ const retrieveCustomerOrders = stripeCustomerId =>
 module.exports = {
   createCharge,
   captureSuccessfulBookingCharge,
-  refundUncapturedCharge,
+  refundCharge,
   createCustomerWithSource,
   retrieveCustomerAndAddSource,
   retrieveCustomerSourcesData,

@@ -102,3 +102,19 @@ export const fetchStripeOrders = accessToken => {
     return result.data.orders.data;
   });
 };
+
+export const refundStripeOrder = (accessToken, chargeId) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    'x-access-token': accessToken,
+  };
+
+  const body = { chargeId: chargeId };
+
+  return axios
+    .post('http://localhost:5000/api/refundStripeOrder', body, { headers })
+    .then(result => {
+      return result.data;
+    })
+    .catch(console.log);
+};

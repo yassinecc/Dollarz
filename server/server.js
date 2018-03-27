@@ -87,11 +87,24 @@ app.get('/api/getCustomerCards/', (req, res) =>
 );
 
 app.get('/api/getStripeOrders/', (req, res) =>
-  Customer.findById(res.locals.decoded.userId).then(user => {
-    return stripeService.retrieveCustomerOrders(user.stripeCustomerId).then(result => {
+  Customer.findById(res.locals.decoded.userId)
+    .then(user => {
+      return stripeService.retrieveCustomerOrders(user.stripeCustomerId);
+    })
+    .then(result => {
       res.status(200).send({ orders: result });
-    });
-  })
+    })
+);
+
+app.post('/api/refundStripeOrder', (req, res) =>
+  Customer.findById(res.locals.decoded.userId)
+    .then(user => {
+      return stripeService.refundCharge(req.body.chargeId);
+    })
+    .then(result => {
+      res.status(200).send('OK');
+    })
+    .catch(console.log)
 );
 
 app.use('/explorer', explorer(settings));
