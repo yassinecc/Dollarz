@@ -71,8 +71,8 @@ class Order extends Component {
   requestPayment = () => {
     this.setState({ isPaymentPending: true });
     return doPayment(
+      this.state.selectedOffer,
       this.state.cardChoice.stripeInfo,
-      Number(this.state.selectedOffer.price),
       this.props.accessToken
     )
       .then(response => {

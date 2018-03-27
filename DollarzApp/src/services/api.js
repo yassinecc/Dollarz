@@ -16,10 +16,11 @@ export const fetchCustomerStripeSources = accessToken => {
     });
 };
 
-export const doPayment = (customerCard, amount, accessToken) => {
+export const doPayment = (offer, customerCard, accessToken) => {
   const body = {
     tokenId: customerCard.tokenId,
-    amount: amount,
+    offerName: offer.name,
+    amount: Number(offer.price),
     cardId: customerCard.card.cardId,
   };
   const headers = {

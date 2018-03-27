@@ -60,7 +60,7 @@ app.post('/api/doPayment/', (req, res) => {
         stripeCustomer.default_source,
         req.body.amount,
         true,
-        'Test payment',
+        req.body.offerName,
         {}
       );
     })
