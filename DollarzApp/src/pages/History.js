@@ -37,17 +37,19 @@ class History extends Component {
   };
 
   render() {
-    console.log(this.state.selectedOrder);
     return (
       <View style={styles.container}>
         {this.props.orders.map(order => (
           <TouchableOpacity key={order.id} onPress={() => this.onOrderPress(order)}>
             <Text>{order.description}</Text>
-            {this.state.selectedOrderId === order.id && (
-              <TouchableOpacity onPress={this.doRefund}>
-                <Text>Demander remboursement</Text>
-              </TouchableOpacity>
-            )}
+            {this.state.selectedOrderId === order.id &&
+              (order.refunded ? (
+                <Text>Commande remboursée</Text>
+              ) : (
+                <TouchableOpacity onPress={this.doRefund}>
+                  <Text>Demander remboursement</Text>
+                </TouchableOpacity>
+              ))}
           </TouchableOpacity>
         ))}
       </View>
