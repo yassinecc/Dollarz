@@ -9,6 +9,8 @@ const tabBarIcon = (routeName, focused, tintColor) => {
     iconName = `ios-home${focused ? '' : '-outline'}`;
   } else if (routeName === 'Commander') {
     iconName = `ios-cart${focused ? '' : '-outline'}`;
+  } else if (routeName === 'Historique') {
+    iconName = `ios-calendar${focused ? '' : '-outline'}`;
   }
 
   return <Icon name={iconName} size={25} color={tintColor} />;
@@ -25,6 +27,7 @@ export default TabNavigator(
   {
     Accueil: { screen: Pages.Infos },
     Commander: { screen: Pages.Order },
+    Historique: { screen: Pages.History },
   },
   {
     navigationOptions: tabNavigatorOptions,
