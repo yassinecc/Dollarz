@@ -76,9 +76,14 @@ class Order extends Component {
       this.props.accessToken
     )
       .then(response => {
-        this.setState({ isPaymentPending: false, paymentSucceeded: true });
+        this.setState({ paymentSucceeded: true });
       })
-      .catch(console.log);
+      .catch(error => {
+        this.setState({ paymentSucceeded: false });
+      })
+      .finally(() => {
+        this.setState({ isPaymentPending: false });
+      });
   };
 
   toggleOffer = offer => {

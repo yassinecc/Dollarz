@@ -46,6 +46,7 @@ app.get('/api/checkAuth/', (req, res) => {
 });
 
 app.post('/api/doPayment/', (req, res) => {
+  let stripeResponse = {};
   Customer.findById(res.locals.decoded.userId)
     .then(user => {
       return stripeService.retrieveCustomerAndAddSource(
@@ -59,12 +60,22 @@ app.post('/api/doPayment/', (req, res) => {
         stripeCustomer.id,
         stripeCustomer.default_source,
         req.body.amount,
-        true,
+        false,
         req.body.offerName,
         {}
       );
     })
+    .then(response => {
+      stripeResponse = response;
+      // return Promise.resolve(stripeResponse);
+      return Promise.reject(Error('error'));
+    })
+    .catch(error => {
+      stripeService.refundCharge(stripeResponse.id);
+      return Promise.reject(Error(error));
+    })
     .then(stripeResponse => {
+      stripeService.captureSuccessfulBookingCharge(stripeResponse.id);
       res.status(200).send({ stripeResponse: stripeResponse, username: res.locals.decoded.user });
     })
     .catch(error => {
