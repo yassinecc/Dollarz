@@ -92,3 +92,13 @@ export const login = (username, password) => {
       return Promise.reject(Error('error', { error }));
     });
 };
+
+export const fetchStripeOrders = accessToken => {
+  const headers = {
+    'Content-Type': 'application/json',
+    'x-access-token': accessToken,
+  };
+  return axios.get('http://localhost:5000/api/getStripeOrders', { headers }).then(result => {
+    return result.data.orders.data;
+  });
+};

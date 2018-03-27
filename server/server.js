@@ -86,6 +86,14 @@ app.get('/api/getCustomerCards/', (req, res) =>
     })
 );
 
+app.get('/api/getStripeOrders/', (req, res) =>
+  Customer.findById(res.locals.decoded.userId).then(user => {
+    return stripeService.retrieveCustomerOrders(user.stripeCustomerId).then(result => {
+      res.status(200).send({ orders: result });
+    });
+  })
+);
+
 app.use('/explorer', explorer(settings));
 
 app.listen(5000, function() {

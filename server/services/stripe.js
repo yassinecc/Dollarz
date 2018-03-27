@@ -28,40 +28,6 @@ const createCharge = (
   });
 };
 
-const chargeFromDeposit = (depositChargeId, amount) => {
-  if (amount > 0) {
-    return stripe.charges
-      .capture(depositChargeId, { amount: Math.round(amount * 100) })
-      .catch(error => {
-        console.log(`Error charging from deposit [from chargeFromDeposit]`, {
-          error,
-          depositChargeId,
-          amount,
-        });
-        return Promise.reject(error);
-      });
-  } else {
-    return Promise.resolve('No amount charged');
-  }
-};
-
-const getChargedDepositAmount = depositChargeId =>
-  stripe.charges
-    .retrieve(depositChargeId)
-    .then(charge => {
-      if (charge.captured || charge.refunded) {
-        return 0; // If deposit has been captured or released, we can take 0 EUR from it
-      }
-      return toNumber(charge.amount) / 100;
-    })
-    .catch(error => {
-      console.log(`Error getting charged deposit [from getChargedDepositAmount]`, {
-        error,
-        depositChargeId,
-      });
-      return 0;
-    });
-
 const captureSuccessfulBookingCharge = stripeChargeId =>
   stripe.charges.capture(stripeChargeId).catch(error => {
     console.log(`Error capturing successful booking charge [from captureSuccessfulBookingCharge]`, {
@@ -126,38 +92,6 @@ const retrieveCustomerAndAddSource = (stripeCustomerId, stripeTokenId, stripeCar
   }
 };
 
-const createDepositAndUpdateBooking = (booking, depositAmount, description) => {
-  const metadata = { agency: booking.departAgencyCode().codeAgency };
-  return createCharge(
-    booking.stripeCustomerId,
-    booking.stripeSourceId,
-    depositAmount,
-    false,
-    description,
-    metadata
-  )
-    .then(result => {
-      return booking.updateAttributes({
-        depositDate: momentTz.unix(result.created).utc(),
-        depositChargeId: result.id,
-      });
-    })
-    .catch(error => {
-      console.log('Error creating deposit', { error });
-      return Promise.reject(error);
-    });
-};
-
-const releaseDeposit = booking =>
-  stripe.refunds
-    .create({
-      charge: booking.depositChargeId,
-    })
-    .catch(error => {
-      console.log(`Error releasing deposit of booking [from releaseDeposit]`, { error, booking });
-      return Promise.reject(error);
-    });
-
 const retrieveCustomerSourcesData = stripeCustomerId =>
   stripe.customers
     .retrieve(stripeCustomerId)
@@ -167,15 +101,15 @@ const retrieveCustomerSourcesData = stripeCustomerId =>
       return Promise.reject(error);
     });
 
+const retrieveCustomerOrders = stripeCustomerId =>
+  stripe.charges.list({ customer: stripeCustomerId });
+
 module.exports = {
   createCharge,
   captureSuccessfulBookingCharge,
   refundUncapturedCharge,
-  createDepositAndUpdateBooking,
-  releaseDeposit,
   createCustomerWithSource,
   retrieveCustomerAndAddSource,
   retrieveCustomerSourcesData,
-  chargeFromDeposit,
-  getChargedDepositAmount,
+  retrieveCustomerOrders,
 };
