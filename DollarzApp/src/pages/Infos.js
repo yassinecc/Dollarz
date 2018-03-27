@@ -24,14 +24,16 @@ class Infos extends Component<StateType> {
     };
   }
 
-  componentWillMount() {
-    return checkAuth(this.props.accessToken)
-      .then(() => {
-        this.setState({ isAuthenticated: true });
-      })
-      .catch(() => {
-        this.setState({ isAuthenticated: false });
-      });
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.accessToken !== this.props.accessToken) {
+      return checkAuth(nextProps.accessToken)
+        .then(() => {
+          this.setState({ isAuthenticated: true });
+        })
+        .catch(() => {
+          this.setState({ isAuthenticated: false });
+        });
+    }
   }
 
   login = () => {

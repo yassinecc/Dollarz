@@ -41,8 +41,8 @@ app.use(function(req, res, next) {
   }
 });
 
-app.post('/api/checkAuth/', (req, res) => {
-  res.status.send('OK');
+app.get('/api/checkAuth/', (req, res) => {
+  res.status(200).send('OK');
 });
 
 app.post('/api/doPayment/', (req, res) => {

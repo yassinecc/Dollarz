@@ -60,6 +60,7 @@ export const createUser = (username, password) => {
 export const checkAuth = accessToken => {
   const headers = {
     'Content-Type': 'application/json',
+    'x-access-token': accessToken,
   };
 
   return axios
