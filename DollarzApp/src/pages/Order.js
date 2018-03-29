@@ -39,6 +39,7 @@ class Order extends Component {
       cardChoice: null,
       isFetchingStripeSources: false,
       selectedOffer: undefined,
+      shouldDisplayPaymentError: false,
     };
   }
 
@@ -79,7 +80,7 @@ class Order extends Component {
         this.setState({ paymentSucceeded: true });
       })
       .catch(error => {
-        this.setState({ paymentSucceeded: false });
+        this.setState({ shouldDisplayPaymentError: true, paymentSucceeded: false });
       })
       .finally(() => {
         this.setState({ isPaymentPending: false });
@@ -90,6 +91,10 @@ class Order extends Component {
     this.state.selectedOffer && this.state.selectedOffer.id === offer.id
       ? this.setState({ selectedOffer: undefined })
       : this.setState({ selectedOffer: offer });
+  };
+
+  renderPaymentError = () => {
+    return <Text style={{ alignSelf: 'center' }}>Votre paiement n'a pas pu être traité</Text>;
   };
 
   render() {
@@ -153,6 +158,7 @@ class Order extends Component {
                 <Icon name="ios-checkmark-circle" size={30} color={'rgb(130,219,9)'} />
               </View>
             )}
+            {this.state.shouldDisplayPaymentError && this.renderPaymentError()}
           </View>
         ) : (
           <Text>Vous devez être connecté pour voir cette page</Text>

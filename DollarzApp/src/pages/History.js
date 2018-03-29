@@ -40,7 +40,7 @@ class History extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Historique des paiements</Text>
+        <Text style={styles.title}>Historique des commandes</Text>
         <ScrollView>
           {this.props.orders.map((order, index) => (
             <ListItem
