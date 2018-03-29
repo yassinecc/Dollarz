@@ -2,7 +2,14 @@
 
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react/native';
-import { StyleSheet, View, ScrollView, Text, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import { ListItem } from '../components';
 
 @inject(({ userStore, orderStore }) => ({
@@ -16,15 +23,15 @@ class History extends Component {
   constructor() {
     super();
     this.state = {
-      isReady: false,
+      hasFetchedOrders: false,
       selectedOrderId: undefined,
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     return this.props.getStripeOrders(this.props.accessToken).then(
       this.setState({
-        isReady: true,
+        hasFetchedOrders: true,
       })
     );
   }
@@ -41,18 +48,22 @@ class History extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Historique des commandes</Text>
-        <ScrollView>
-          {this.props.orders.map((order, index) => (
-            <ListItem
-              key={order.id}
-              order={order}
-              isSelected={this.state.selectedOrderId === order.id}
-              hasSeparator={index > 0}
-              onOrderPress={this.onOrderPress}
-              onRefundPress={this.doRefund}
-            />
-          ))}
-        </ScrollView>
+        {this.state.hasFetchedOrders && this.props.orders.length > 0 ? (
+          <ScrollView>
+            {this.props.orders.map((order, index) => (
+              <ListItem
+                key={order.id}
+                order={order}
+                isSelected={this.state.selectedOrderId === order.id}
+                hasSeparator={index > 0}
+                onOrderPress={this.onOrderPress}
+                onRefundPress={this.doRefund}
+              />
+            ))}
+          </ScrollView>
+        ) : (
+          <ActivityIndicator />
+        )}
       </View>
     );
   }
