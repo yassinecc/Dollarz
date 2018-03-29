@@ -65,13 +65,11 @@ app.post('/api/doPayment/', (req, res) => {
         stripeCustomer.default_source,
         req.body.amount,
         false,
-        req.body.offerName,
-        {}
+        req.body.offerName
       );
     })
     .then(response => {
-      stripeResponse = response;
-      return Promise.resolve(stripeResponse);
+      return Promise.resolve(response);
       // return Promise.reject(Error('error'));
     })
     .catch(error => {
