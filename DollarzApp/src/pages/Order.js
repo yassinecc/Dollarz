@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import stripe from 'tipsi-stripe';
 import CheckBox from 'react-native-check-box';
 import { doPayment } from 'DollarzApp/src/services/api';
-import CreditCard from '../components/CreditCard';
+import { CreditCard } from '../components';
 import { offerMap } from '../services/offerMap';
 
 stripe.init({

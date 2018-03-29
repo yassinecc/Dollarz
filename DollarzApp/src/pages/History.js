@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react/native';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { ListItem } from '../components';
 
 @inject(({ userStore, orderStore }) => ({
   accessToken: userStore.accessToken,
@@ -40,17 +41,13 @@ class History extends Component {
     return (
       <View style={styles.container}>
         {this.props.orders.map(order => (
-          <TouchableOpacity key={order.id} onPress={() => this.onOrderPress(order)}>
-            <Text>{order.description}</Text>
-            {this.state.selectedOrderId === order.id &&
-              (order.refunded ? (
-                <Text>Commande remboursée</Text>
-              ) : (
-                <TouchableOpacity onPress={this.doRefund}>
-                  <Text>Demander remboursement</Text>
-                </TouchableOpacity>
-              ))}
-          </TouchableOpacity>
+          <ListItem
+            key={order.id}
+            order={order}
+            isSelected={this.state.selectedOrderId === order.id}
+            onOrderPress={this.onOrderPress}
+            onRefundPress={this.doRefund}
+          />
         ))}
       </View>
     );
