@@ -42,11 +42,12 @@ class History extends Component {
       <View style={styles.container}>
         <Text style={styles.title}>Historique des paiements</Text>
         <ScrollView>
-          {this.props.orders.map(order => (
+          {this.props.orders.map((order, index) => (
             <ListItem
               key={order.id}
               order={order}
               isSelected={this.state.selectedOrderId === order.id}
+              hasSeparator={index > 0}
               onOrderPress={this.onOrderPress}
               onRefundPress={this.doRefund}
             />
