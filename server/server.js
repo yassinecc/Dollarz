@@ -77,7 +77,7 @@ app.post('/api/doPayment/', (req, res) => {
       return Promise.reject(Error(error));
     })
     .then(stripeResponse => {
-      stripeService.captureSuccessfulBookingCharge(stripeResponse.id);
+      stripeService.captureSuccessfulCharge(stripeResponse.id);
       res.status(200).send({ stripeResponse: stripeResponse, username: res.locals.decoded.user });
     })
     .catch(error => {

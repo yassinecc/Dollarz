@@ -22,9 +22,9 @@ const createCharge = (
   });
 };
 
-const captureSuccessfulBookingCharge = stripeChargeId =>
+const captureSuccessfulCharge = stripeChargeId =>
   stripe.charges.capture(stripeChargeId).catch(error => {
-    console.log(`Error capturing successful booking charge [from captureSuccessfulBookingCharge]`, {
+    console.log(`Error capturing successful charge [from captureSuccessfulCharge]`, {
       error,
       stripeChargeId,
     });
@@ -100,7 +100,7 @@ const retrieveCustomerOrders = stripeCustomerId =>
 
 module.exports = {
   createCharge,
-  captureSuccessfulBookingCharge,
+  captureSuccessfulCharge,
   refundCharge,
   createCustomerWithSource,
   retrieveCustomerAndAddSource,
