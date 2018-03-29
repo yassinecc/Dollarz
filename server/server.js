@@ -49,11 +49,15 @@ app.post('/api/doPayment/', (req, res) => {
   let stripeResponse = {};
   Customer.findById(res.locals.decoded.userId)
     .then(user => {
-      return stripeService.retrieveCustomerAndAddSource(
-        user.stripeCustomerId,
-        req.body.tokenId,
-        req.body.cardId
-      );
+      if (user.stripeCustomerId) {
+        return stripeService.retrieveCustomerAndAddSource(
+          user.stripeCustomerId,
+          req.body.tokenId,
+          req.body.cardId
+        );
+      } else {
+        return createCustomerWithSource(req.body.tokenId, user.username);
+      }
     })
     .then(stripeCustomer => {
       return stripeService.createCharge(
