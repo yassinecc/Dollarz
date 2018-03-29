@@ -71,8 +71,8 @@ app.post('/api/doPayment/', (req, res) => {
     })
     .then(response => {
       stripeResponse = response;
-      // return Promise.resolve(stripeResponse);
-      return Promise.reject(Error('error'));
+      return Promise.resolve(stripeResponse);
+      // return Promise.reject(Error('error'));
     })
     .catch(error => {
       stripeService.refundCharge(stripeResponse.id);

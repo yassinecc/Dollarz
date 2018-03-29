@@ -1,22 +1,22 @@
 export const offerMap = [
   {
     id: 1,
-    name: 'Salut',
-    price: 10,
-  },
-  {
-    id: 2,
-    name: 'Coucou',
+    name: 'Petit tapis',
     price: 5,
   },
   {
+    id: 2,
+    name: 'Tapis',
+    price: 10,
+  },
+  {
     id: 3,
-    name: 'Un mouton',
+    name: 'Tapis berbère',
     price: 50,
   },
   {
     id: 100,
-    name: '5 Diamants',
+    name: 'Tapis persan',
     price: 500,
   },
 ];

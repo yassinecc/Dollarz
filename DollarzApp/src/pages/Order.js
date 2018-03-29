@@ -137,8 +137,7 @@ class Order extends Component {
                 ))}
               </ScrollView>
             )}
-            {!this.state.paymentSucceeded &&
-              !this.state.isPaymentPending &&
+            {!this.state.isPaymentPending &&
               this.state.selectedOffer && (
                 <Button
                   title={`Payer ${this.state.selectedOffer.price} €`}
@@ -152,12 +151,13 @@ class Order extends Component {
                 <ActivityIndicator />
               </View>
             )}
-            {this.state.paymentSucceeded && (
-              <View style={{ alignItems: 'center' }}>
-                <Text>Paiement réussi!</Text>
-                <Icon name="ios-checkmark-circle" size={30} color={'rgb(130,219,9)'} />
-              </View>
-            )}
+            {!this.state.isPaymentPending &&
+              this.state.paymentSucceeded && (
+                <View style={{ alignItems: 'center' }}>
+                  <Text>Paiement réussi!</Text>
+                  <Icon name="ios-checkmark-circle" size={30} color={'rgb(130,219,9)'} />
+                </View>
+              )}
             {this.state.shouldDisplayPaymentError && this.renderPaymentError()}
           </View>
         ) : (
