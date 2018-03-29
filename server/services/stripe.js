@@ -2,12 +2,6 @@ const app = require('../server');
 const stripeSecretKey = require('../secret.json').stripeSecretKey;
 
 const stripe = require('stripe')(stripeSecretKey);
-const momentTz = require('moment-timezone');
-const toNumber = require('lodash/toNumber');
-
-// ⚠️ IMPORTANT ⚠️
-// If you create a service and need to mock it, you need to do so in /server/jest/setup.js
-// The mocks in this file will override all Stripe mocks in the backend
 
 const createCharge = (
   stripeCustomerId,
