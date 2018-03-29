@@ -78,7 +78,6 @@ const CreditCard = (props: PropsType) => {
           style={styles.logo}
           resizeMode="contain"
         />
-        <Text style={styles.text}>{'carte perso'}</Text>
       </View>
       <Text style={styles.cardNumber}>**** **** **** {props.selectedCreditCard.last4}</Text>
       <Text style={styles.expirationDate}>
