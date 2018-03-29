@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react/native';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { ListItem } from '../components';
 
 @inject(({ userStore, orderStore }) => ({
@@ -40,15 +40,18 @@ class History extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.props.orders.map(order => (
-          <ListItem
-            key={order.id}
-            order={order}
-            isSelected={this.state.selectedOrderId === order.id}
-            onOrderPress={this.onOrderPress}
-            onRefundPress={this.doRefund}
-          />
-        ))}
+        <Text style={styles.title}>Historique des paiements</Text>
+        <ScrollView>
+          {this.props.orders.map(order => (
+            <ListItem
+              key={order.id}
+              order={order}
+              isSelected={this.state.selectedOrderId === order.id}
+              onOrderPress={this.onOrderPress}
+              onRefundPress={this.doRefund}
+            />
+          ))}
+        </ScrollView>
       </View>
     );
   }
@@ -56,10 +59,9 @@ class History extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
     backgroundColor: '#F5FCFF',
     paddingHorizontal: 16,
+    flex: 1,
   },
   textInput: {
     alignSelf: 'center',
@@ -74,6 +76,10 @@ const styles = StyleSheet.create({
   },
   creditCardContainer: {
     flexDirection: 'row',
+  },
+  title: {
+    fontWeight: '700',
+    paddingVertical: 32,
   },
 });
 

@@ -1,10 +1,21 @@
 import React, { Component } from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 
+const styles = {
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+};
+
 class ListItem extends Component {
   render() {
     return (
-      <TouchableOpacity onPress={() => this.props.onOrderPress(this.props.order)}>
+      <TouchableOpacity
+        style={styles.container}
+        onPress={() => this.props.onOrderPress(this.props.order)}
+      >
         <Text>{this.props.order.description}</Text>
         {this.props.isSelected &&
           (this.props.order.refunded ? (
