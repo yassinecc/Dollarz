@@ -91,7 +91,7 @@ const retrieveCustomerSourcesData = stripeCustomerId =>
     .retrieve(stripeCustomerId)
     .then(customer => customer.sources.data)
     .catch(error => {
-      console.log('Error retreiving customer sources data', { error });
+      console.log('Error retrieving customer sources data', { error });
       return Promise.reject(error);
     });
 
