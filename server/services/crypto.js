@@ -31,11 +31,7 @@ var sha512 = function(password, salt) {
 
 function saltHashPassword(userPassword) {
   var salt = genRandomString(16); /** Gives us salt of length 16 */
-  var passwordData = sha512(userPassword, salt);
-  return {
-    salt: passwordData.salt,
-    hashedPassword: passwordData.passwordHash,
-  };
+  return sha512(userPassword, salt);
 }
 
 module.exports = {

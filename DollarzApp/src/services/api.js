@@ -89,7 +89,7 @@ export const login = (username, password) => {
       return data;
     })
     .catch(error => {
-      return Promise.reject(Error('error', { error }));
+      return Promise.reject(Error('Login error', error));
     });
 };
 
