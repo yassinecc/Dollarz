@@ -47,8 +47,10 @@ app.get('/api/checkAuth/', (req, res) => {
 
 app.post('/api/doPayment/', (req, res) => {
   let stripeResponse = {};
+  let dbUser = null;
   Customer.findById(res.locals.decoded.userId)
     .then(user => {
+      dbUser = user;
       if (user.stripeCustomerId) {
         return stripeService.retrieveCustomerAndAddSource(
           user.stripeCustomerId,
@@ -56,7 +58,7 @@ app.post('/api/doPayment/', (req, res) => {
           req.body.cardId
         );
       } else {
-        return createCustomerWithSource(req.body.tokenId, user.username);
+        return stripeService.createCustomerWithSource(req.body.tokenId, user.username);
       }
     })
     .then(stripeCustomer => {
@@ -78,6 +80,7 @@ app.post('/api/doPayment/', (req, res) => {
     })
     .then(stripeResponse => {
       stripeService.captureSuccessfulCharge(stripeResponse.id);
+      dbUser.update({ stripeCustomerId: stripeResponse.customer });
       res.status(200).send({ stripeResponse: stripeResponse, username: res.locals.decoded.user });
     })
     .catch(error => {
