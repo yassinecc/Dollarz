@@ -8,6 +8,10 @@ const stripeService = require('./services/stripe');
 
 const Customer = require('./models').Customer;
 
+const stripeSecretKey = require('./secret.json').stripeSecretKey;
+
+const stripeDirect = require('stripe')(stripeSecretKey);
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.set('authSecret', secret.jwtSecret);
@@ -18,6 +22,25 @@ require('./routes/login')(app);
 const settings = {
   format: 'html',
 };
+
+app.post('/api/pay/', (req, res) => {
+  return stripeDirect.customers
+    .create({
+      email: 'souleymane@tota.com',
+      source: req.body.tokenId,
+    })
+    .then(customer => {
+      return stripeDirect.charges
+        .create({
+          amount: req.body.amount, // Unit: cents
+          currency: 'eur',
+          capture: true,
+          customer: 'cus_Cdzs7yyJBffcRS',
+          source: customer.default_source.id,
+        })
+        .then(result => res.status(200).send(result));
+    });
+});
 
 app.use(function(req, res, next) {
   const token = req.body.token || req.query.token || req.headers['x-access-token'];
@@ -71,14 +94,15 @@ app.post('/api/doPayment/', (req, res) => {
       );
     })
     .then(response => {
-      return Promise.resolve(response);
+      stripeResponse = response 
+      return Promise.resolve('OK');
       // return Promise.reject(Error('error'));
     })
     .catch(error => {
       stripeService.refundCharge(stripeResponse.id);
       return Promise.reject(Error(error));
     })
-    .then(stripeResponse => {
+    .then(() => {
       stripeService.captureSuccessfulCharge(stripeResponse.id);
       dbUser.update({ stripeCustomerId: stripeResponse.customer });
       res.status(200).send({ stripeResponse: stripeResponse, username: res.locals.decoded.user });
