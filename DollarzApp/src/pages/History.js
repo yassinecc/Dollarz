@@ -28,12 +28,11 @@ class History extends Component {
     };
   }
 
-  componentDidMount() {
-    return this.props.getStripeOrders(this.props.accessToken).then(
-      this.setState({
-        hasFetchedOrders: true,
-      })
-    );
+  async componentDidMount() {
+    await this.props.getStripeOrders(this.props.accessToken);
+    this.setState({
+      hasFetchedOrders: true,
+    });
   }
 
   onOrderPress = order => {

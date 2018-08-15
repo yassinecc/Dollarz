@@ -43,16 +43,14 @@ class Order extends Component {
     };
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     this.setState({ isFetchingStripeSources: true });
-    return this.props
-      .getCustomerStripeSources(this.props.accessToken)
-      .catch(error => {
-        console.warn(error);
-      })
-      .finally(() => {
-        this.setState({ isFetchingStripeSources: false });
-      });
+    try {
+      await this.props.getCustomerStripeSources(this.props.accessToken);
+    } catch (error) {
+      console.warn(error);
+    }
+    this.setState({ isFetchingStripeSources: false });
   }
 
   onCreditCardChoice = stripeCardInfo => {
@@ -61,30 +59,26 @@ class Order extends Component {
     } else this.props.showToaster('cardTypeError');
   };
 
-  addNewCard = () => {
-    stripe.paymentRequestWithCardForm().then(stripeResponse => {
-      this.setState({
-        cardChoice: { stripeInfo: { card: { cardId: '' }, tokenId: stripeResponse.tokenId } },
-      });
+  addNewCard = async () => {
+    const stripeResponse = await stripe.paymentRequestWithCardForm();
+    this.setState({
+      cardChoice: { stripeInfo: { card: { cardId: '' }, tokenId: stripeResponse.tokenId } },
     });
   };
 
-  requestPayment = () => {
+  requestPayment = async () => {
     this.setState({ isPaymentPending: true });
-    return doPayment(
-      this.state.selectedOffer,
-      this.state.cardChoice.stripeInfo,
-      this.props.accessToken
-    )
-      .then(response => {
-        this.setState({ paymentSucceeded: true });
-      })
-      .catch(error => {
-        this.setState({ shouldDisplayPaymentError: true, paymentSucceeded: false });
-      })
-      .finally(() => {
-        this.setState({ isPaymentPending: false });
-      });
+    try {
+      await doPayment(
+        this.state.selectedOffer,
+        this.state.cardChoice.stripeInfo,
+        this.props.accessToken
+      );
+      this.setState({ paymentSucceeded: true });
+    } catch (error) {
+      this.setState({ shouldDisplayPaymentError: true, paymentSucceeded: false });
+    }
+    this.setState({ isPaymentPending: false });
   };
 
   toggleOffer = offer => {

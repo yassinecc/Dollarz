@@ -24,23 +24,22 @@ class Home extends Component<StateType> {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  async componentWillReceiveProps(nextProps) {
     if (nextProps.accessToken !== this.props.accessToken) {
-      return checkAuth(nextProps.accessToken)
-        .then(() => {
-          this.setState({ isAuthenticated: true });
-        })
-        .catch(() => {
-          this.setState({ isAuthenticated: false });
-        });
+      try {
+        await checkAuth(nextProps.accessToken);
+        this.setState({ isAuthenticated: true });
+      } catch (error) {
+        this.setState({ isAuthenticated: false });
+      }
     }
   }
 
-  login = () => {
-    return this.props
-      .login(this.state.username, this.state.password)
-      .then(() => this.setState({ isAuthenticated: true }));
+  login = async () => {
+    await this.props.login(this.state.username, this.state.password);
+    this.setState({ isAuthenticated: true });
   };
+
   signup = () => {
     return this.props.signup(this.state.username, this.state.password);
   };
