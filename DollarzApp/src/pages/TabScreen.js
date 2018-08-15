@@ -25,7 +25,7 @@ const tabNavigatorOptions = ({ navigation }) => ({
 
 export default TabNavigator(
   {
-    Accueil: { screen: Pages.Infos },
+    Accueil: { screen: Pages.Home },
     Commander: { screen: Pages.Order },
     Historique: { screen: Pages.History },
   },

@@ -14,7 +14,7 @@ import { checkAuth } from 'DollarzApp/src/services/api';
   logout: () => userStore.logout(),
 }))
 @observer
-class Infos extends Component<StateType> {
+class Home extends Component<StateType> {
   constructor() {
     super();
     this.state = {
@@ -108,4 +108,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Infos;
+export default Home;
