@@ -133,11 +133,14 @@ class Order extends Component {
             )}
             {!this.state.isPaymentPending &&
               this.state.selectedOffer && (
-                <Button
-                  title={`Payer ${this.state.selectedOffer.price} €`}
-                  onPress={this.requestPayment}
-                  disabled={!this.state.cardChoice}
-                />
+                <View>
+                  <Button
+                    title={`Payer ${this.state.selectedOffer.price} €`}
+                    onPress={this.requestPayment}
+                    disabled={!this.state.cardChoice}
+                  />
+                  <Button title={' Pay'} onPress={() => {}} />
+                </View>
               )}
             {this.state.isPaymentPending && (
               <View style={{ alignSelf: 'center' }}>
