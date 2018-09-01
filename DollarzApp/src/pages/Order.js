@@ -21,6 +21,7 @@ import { offerMap } from '../services/offerMap';
 
 stripe.init({
   publishableKey: 'pk_test_NXzesZUopyI0RM7xO4HoIEg3',
+  merchantId: 'MERCHANT_ID',
 });
 
 @inject(({ userStore }) => ({
@@ -60,10 +61,44 @@ class Order extends Component {
   };
 
   addNewCard = async () => {
-    const stripeResponse = await stripe.paymentRequestWithCardForm();
-    this.setState({
-      cardChoice: { stripeInfo: { card: { cardId: '' }, tokenId: stripeResponse.tokenId } },
-    });
+    try {
+      const stripeResponse = await stripe.paymentRequestWithCardForm();
+      this.setState({
+        cardChoice: { stripeInfo: { card: { cardId: '' }, tokenId: stripeResponse.tokenId } },
+      });
+    } catch (error) {
+      console.log('Error requesting card payment', { error });
+    }
+  };
+
+  payWithApplePay = async () => {
+    try {
+      const items = [
+        {
+          label: 'Tapis',
+          amount: `${this.state.selectedOffer.price}`,
+        },
+        {
+          label: 'Yassinec',
+          amount: `${this.state.selectedOffer.price}`,
+        },
+      ];
+      await stripe.deviceSupportsApplePay();
+      await stripe.canMakeApplePayPayments();
+      const stripeResponse = await stripe.paymentRequestWithApplePay(items);
+      await doPayment(
+        this.state.selectedOffer,
+        { card: { cardId: '' }, tokenId: stripeResponse.tokenId },
+        this.props.accessToken
+      );
+      stripe.completeApplePayRequest();
+      this.setState({ paymentSucceeded: true });
+    } catch (error) {
+      console.log('Apple pay error', { error });
+      this.setState({ shouldDisplayPaymentError: true, paymentSucceeded: false });
+      stripe.cancelApplePayRequest();
+    }
+    this.setState({ isPaymentPending: false });
   };
 
   requestPayment = async () => {
@@ -139,7 +174,7 @@ class Order extends Component {
                     onPress={this.requestPayment}
                     disabled={!this.state.cardChoice}
                   />
-                  <Button title={' Pay'} onPress={() => {}} />
+                  <Button title={' Pay'} onPress={this.payWithApplePay} />
                 </View>
               )}
             {this.state.isPaymentPending && (
