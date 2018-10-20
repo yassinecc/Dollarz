@@ -16,10 +16,14 @@ class UserStore {
     });
   }
 
-  @observable isStoreHydrated = false;
-  @observable accessToken = null;
-  @observable user = null;
-  @observable customerStripeSources = [];
+  @observable
+  isStoreHydrated = false;
+  @observable
+  accessToken = null;
+  @observable
+  user = null;
+  @observable
+  customerStripeSources = [];
 
   @action
   setCustomerStripeSources(customerStripeSources) {
@@ -56,6 +60,14 @@ class UserStore {
 
   getCustomerStripeSources = token =>
     fetchCustomerStripeSources(token)
+      .then(customerStripeSources => {
+        return customerStripeSources.map(source => {
+          if (source.type === 'three_d_secure') return source.three_d_secure;
+          else if (source.type === 'card') return source.card;
+          else if (source.object === 'card') return source;
+          else return;
+        });
+      })
       .then(customerStripeSources => {
         this.setCustomerStripeSources(
           customerStripeSources.map(sourceData => ({
