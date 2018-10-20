@@ -8,9 +8,11 @@
 
 #import "STPPaymentCardTextFieldCell.h"
 
+#import "UIView+Stripe_SafeAreaBounds.h"
+
 @interface STPPaymentCardTextFieldCell()
 
-@property(nonatomic, weak)STPPaymentCardTextField *paymentField;
+@property (nonatomic, weak) STPPaymentCardTextField *paymentField;
 
 @end
 
@@ -31,7 +33,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.paymentField.frame = self.bounds;
+    self.paymentField.frame = self.contentView.bounds;
 }
 
 - (void)setTheme:(STPTheme *)theme {

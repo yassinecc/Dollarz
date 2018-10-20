@@ -13,7 +13,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface STPCard () <STPInternalAPIResponseDecodable>
 
++ (STPCardFundingType)fundingFromString:(NSString *)string;
 + (nullable NSString *)stringFromFunding:(STPCardFundingType)funding;
+
++ (NSString *)stringFromBrand:(STPCardBrand)brand;
 
 @end
 
