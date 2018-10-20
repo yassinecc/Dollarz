@@ -10,6 +10,7 @@ import {
   Text,
   ActivityIndicator,
   TextInput,
+  Alert,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -59,11 +60,20 @@ class Order extends Component {
 
   addNewCard = async () => {
     try {
-      const stripeResponse = await stripe.paymentRequestWithCardForm();
+      const stripeResponse = await stripe.paymentRequestWithCardForm({ createCardSource: true });
+      const shouldUse3DS = stripeResponse.details.three_d_secure !== 'not_supported';
+      debugger;
       this.setState({
-        cardChoice: { stripeInfo: { card: { cardId: '' }, tokenId: stripeResponse.tokenId } },
+        cardChoice: {
+          stripeInfo: {
+            card: { cardId: '' },
+            tokenId: stripeResponse.sourceId,
+            use3DS: shouldUse3DS,
+          },
+        },
       });
     } catch (error) {
+      if (error.code === 'sourceStatusFailed') Alert.alert('3DS failed');
       console.log('Error requesting card payment', { error });
     }
   };
@@ -99,13 +109,20 @@ class Order extends Component {
   };
 
   requestPayment = async () => {
-    this.setState({ isPaymentPending: true });
+    this.setState({ isPaymentPending: true, shouldDisplayPaymentError: false });
     try {
-      await doPayment(
-        this.state.selectedOffer,
-        this.state.cardChoice.stripeInfo,
-        this.props.accessToken
-      );
+      const stripeInfo = this.state.cardChoice.stripeInfo;
+      if (this.state.cardChoice.stripeInfo.use3DS) {
+        const secureSource = await stripe.createSourceWithParams({
+          type: 'threeDSecure',
+          amount: this.state.selectedOffer.price * 100,
+          currency: 'eur',
+          card: this.state.cardChoice.stripeInfo.tokenId,
+          returnURL: 'dollarz://order',
+        });
+        stripeInfo.tokenId = secureSource.sourceId;
+      }
+      await doPayment(this.state.selectedOffer, stripeInfo, this.props.accessToken);
       this.setState({ paymentSucceeded: true });
     } catch (error) {
       this.setState({ shouldDisplayPaymentError: true, paymentSucceeded: false });
@@ -149,8 +166,8 @@ class Order extends Component {
                 showsHorizontalScrollIndicator
                 contentContainerStyle={styles.creditCardContainer}
               >
-                {this.props.customerStripeSources.map(card => (
-                  <View style={styles.creditCardContainer} key={card.cardId}>
+                {this.props.customerStripeSources.map((card, index) => (
+                  <View style={styles.creditCardContainer} key={index}>
                     <CreditCard
                       selectedCreditCard={card}
                       isSelected={
