@@ -5342,12 +5342,9 @@ time-stamp@^1.0.0:
   resolved "https://registry.yarnpkg.com/time-stamp/-/time-stamp-1.1.0.tgz#764a5a11af50561921b133f3b44e618687e0f5c3"
   integrity sha1-dkpaEa9QVhkhsTPztE5hhofg9cM=
 
-tipsi-stripe@^4.6.3:
-  version "4.6.3"
-  resolved "https://registry.yarnpkg.com/tipsi-stripe/-/tipsi-stripe-4.6.3.tgz#a591a3bb4c8162d808068ec41659858879d2dd51"
-  integrity sha512-hJBCzldwmnIo5N+gGPGzDSWVLI8qEErBous6tCwgRX/iDm/vM0ZROpPY1rRf9rwuyX41gi7Yjd03CGlTYIwjaw==
-  dependencies:
-    prop-types "^15.5.10"
+"tipsi-stripe@https://github.com/yassinecc/tipsi-stripe/archive/master.tar.gz":
+  version "5.6.0"
+  resolved "https://github.com/yassinecc/tipsi-stripe/archive/master.tar.gz#d4b99da2dc1e5dbb57bb4e7585cbcdc4f14650c2"
 
 tmp@^0.0.33:
   version "0.0.33"

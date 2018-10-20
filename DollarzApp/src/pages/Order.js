@@ -19,7 +19,7 @@ import { doPayment } from 'DollarzApp/src/services/api';
 import { CreditCard } from '../components';
 import { offerMap } from '../services/offerMap';
 
-stripe.init({
+stripe.setOptions({
   publishableKey: 'pk_test_NXzesZUopyI0RM7xO4HoIEg3',
   merchantId: 'MERCHANT_ID',
 });
