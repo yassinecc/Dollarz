@@ -54,11 +54,8 @@ class Order extends Component {
     this.setState({ isFetchingStripeSources: false });
   }
 
-  onCreditCardChoice = stripeCardInfo => {
-    if (stripeCardInfo.card.brand === 'Visa' || stripeCardInfo.card.brand === 'MasterCard') {
-      this.setState({ cardChoice: { stripeInfo: stripeCardInfo } });
-    } else this.props.showToaster('cardTypeError');
-  };
+  onCreditCardChoice = stripeCardInfo =>
+    this.setState({ cardChoice: { stripeInfo: stripeCardInfo } });
 
   addNewCard = async () => {
     try {
