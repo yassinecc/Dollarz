@@ -1,3 +1,6 @@
 [submodule "dollarz-app"]
 	path = dollarz-app
 	url = git@github.com:yassinecc/dollarz-app
+[submodule "dollarz-server"]
+	path = dollarz-server
+	url = git@github.com:yassinecc/dollarz-server
