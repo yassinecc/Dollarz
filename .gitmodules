@@ -1,0 +1,3 @@
+[submodule "dollarz-app"]
+	path = dollarz-app
+	url = git@github.com:yassinecc/dollarz-app
